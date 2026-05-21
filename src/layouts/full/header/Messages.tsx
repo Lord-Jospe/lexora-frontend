@@ -1,17 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { Icon } from '@iconify/react';
 
-const BellIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-  </svg>
-);
-
-// Notificaciones de ejemplo — luego vendrán de la BD
 const mockNotifications = [
-  { id: 1, text: 'Factura de Farmacias SAS procesada', time: 'Hace 5 min',  unread: true  },
-  { id: 2, text: 'Error en factura de Distribuciones García', time: 'Hace 1h', unread: true  },
-  { id: 3, text: 'Insumos Norte LTA — pago pendiente',  time: 'Hace 3h',  unread: false },
+  { id: 1, text: 'Factura de Farmacias SAS procesada',        time: 'Hace 5 min', unread: true  },
+  { id: 2, text: 'Error en factura de Distribuciones García', time: 'Hace 1h',    unread: true  },
+  { id: 3, text: 'Insumos Norte LTA — pago pendiente',        time: 'Hace 3h',    unread: false },
 ];
 
 const Notifications = () => {
@@ -22,9 +15,7 @@ const Notifications = () => {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -35,39 +26,61 @@ const Notifications = () => {
       {/* Trigger */}
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
+        className="relative p-2 rounded-full text-gray-500
+                   hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
       >
-        <BellIcon />
+        <Icon icon="solar:bell-linear" width={20} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-900" />
         )}
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-800 dark:text-white">Notificaciones</span>
+        <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900
+                        border border-gray-200 dark:border-gray-700
+                        rounded-xl shadow-lg z-50 overflow-hidden">
+
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3
+                          border-b border-gray-100 dark:border-gray-800">
+            <span className="text-sm font-semibold text-gray-800 dark:text-white">
+              Notificaciones
+            </span>
             {unreadCount > 0 && (
-              <span className="text-xs bg-violet-100 text-violet-600 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full font-medium">
+              <span className="text-xs bg-violet-100 text-violet-600
+                               dark:bg-violet-900/40 dark:text-violet-400
+                               px-2 py-0.5 rounded-full font-medium">
                 {unreadCount} nuevas
               </span>
             )}
           </div>
 
-          <ul>
+          {/* Lista */}
+          <ul className="max-h-72 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-800">
             {mockNotifications.map((n) => (
               <li
                 key={n.id}
-                className={`px-4 py-3 border-b border-gray-50 dark:border-gray-800 last:border-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
-                  n.unread ? 'bg-violet-50/50 dark:bg-violet-900/10' : ''
-                }`}
+                className={`flex items-start gap-3 px-4 py-3 cursor-pointer
+                            hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors
+                            ${n.unread ? 'bg-violet-50/60 dark:bg-violet-900/10' : ''}`}
               >
-                <p className="text-sm text-gray-700 dark:text-gray-300">{n.text}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{n.time}</p>
+                <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0
+                                 ${n.unread ? 'bg-violet-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                <div>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-snug">{n.text}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{n.time}</p>
+                </div>
               </li>
             ))}
           </ul>
+
+          {/* Footer */}
+          <div className="px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 text-center">
+            <button className="text-xs text-violet-600 dark:text-violet-400 font-medium hover:underline">
+              Ver todas las notificaciones
+            </button>
+          </div>
         </div>
       )}
     </div>
