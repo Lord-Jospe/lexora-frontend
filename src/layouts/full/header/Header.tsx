@@ -1,0 +1,112 @@
+import { useState, useEffect, useEffectEvent } from 'react';
+import { Icon } from '@iconify/react';
+import SidebarLayout from '../sidebar/Sidebar';
+import FullLogo from '../../logo/FullLogo';
+import Profile from './Profile';
+import Notifications from './Messages';
+import Search from './Search';
+
+import { Sheet, SheetContent, SheetTitle } from '../../../components/ui/sheet';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+
+
+const Header = () => {
+  const [isSticky, setIsSticky] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleScroll = useEffectEvent(() => {
+    if (window.scrollY > 50) {
+      setIsSticky(true);
+    } else {
+      setIsSticky(false);
+    }
+  });
+
+  const handleResize = useEffectEvent(() => {
+    if (window.innerWidth > 1023) {
+      setIsOpen(false);
+    }
+  });
+
+  useEffect(() => {
+    // Use stable callbacks inside the effect
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+
+  const handleMobileMenu = () => {
+    if (mobileMenu === 'active') {
+      setMobileMenu('');
+    } else {
+      setMobileMenu('active');
+    }
+  };
+
+  return (
+     <>
+
+     
+      <header
+        className={`sticky top-0 z-[2] ${
+          isSticky ? 'bg-white dark:bg-dark shadow-md fixed w-full' : 'bg-transparent'
+        }`}
+      >
+        <nav className="rounded-none bg-transparent dark:bg-transparent py-4 px-6 !max-w-full flex justify-between items-center">
+          {/* Mobile Toggle Icon */}
+          <span
+            onClick={() => setIsOpen(true)}
+            className="px-[15px] hover:text-primary dark:hover:text-primary text-foreground dark:text-muted-foreground relative after:absolute after:w-10 after:h-10 after:rounded-full hover:after:bg-lightprimary  after:bg-transparent rounded-full xl:hidden flex justify-center items-center cursor-pointer"
+          >
+            <Icon icon="tabler:menu-2" height={20} />
+          </span>
+
+          <div className="hidden xl:flex items-center gap-2">
+            <Search />
+          </div>
+
+          {/* mobile-logo */}
+          <div className="block xl:hidden">
+            <FullLogo />
+          </div>
+
+          <div className="xl:!block !hidden md:!hidden">
+            <div className="flex gap-0 items-center">
+            {/* Messages Dropdown */}
+              <Notifications />
+
+              {/* Profile Dropdown */}
+              <Profile />
+            </div>
+          </div>
+          {/* Mobile Toggle Icon */}
+          <span className="flex xl:hidden " onClick={handleMobileMenu}>
+            <div className="xl:hidden flex w-full">
+              
+                <Notifications />
+                <Profile />
+            </div>
+          </span>
+        </nav>
+      </header>
+
+      {/* Mobile Sidebar */}
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetContent side="left" className="w-64 p-0">
+          <VisuallyHidden>
+            <SheetTitle>sidebar</SheetTitle>
+          </VisuallyHidden>
+          <SidebarLayout onClose={() => setIsOpen(false)} />
+        </SheetContent>
+      </Sheet>
+    </>
+  );
+};
+
+export default Header;

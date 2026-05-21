@@ -1,0 +1,222 @@
+/* ============================================================
+   auth.css — compact version
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+
+/* ── Layout ─────────────────────────────────────────────── */
+
+.auth-page {
+  font-family: "DM Sans", sans-serif;
+  background: #fff;
+  min-height: 100vh;
+}
+
+/* Left half (form) */
+.auth-left {
+  flex: 0 0 45%;
+  max-width: 45%;
+  padding: 2rem 2rem;
+  background: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Right half (image) */
+.auth-right {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #e8ede8;
+}
+
+/* Image */
+.auth-right img.auth-side-image,
+.auth-right .auth-side-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #d4ddd4;
+}
+
+/* Form container */
+.auth-form-container {
+  width: 100%;
+  max-width: 350px;
+}
+
+/* ── Typography ─────────────────────────────────────────── */
+
+.login-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 0.35rem;
+  line-height: 1.2;
+}
+
+.login-subtitle {
+  font-size: 0.88rem;
+  color: #555;
+  margin-bottom: 1.4rem;
+  line-height: 1.45;
+}
+
+/* ── Labels ─────────────────────────────────────────────── */
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 0.3rem;
+}
+
+/* ── Inputs ─────────────────────────────────────────────── */
+
+.custom-input {
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.58rem 0.9rem;
+  font-size: 0.88rem;
+  color: #111;
+  background: #fff;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.custom-input::placeholder {
+  color: #adb5bd;
+}
+
+.custom-input:focus {
+  border-color: #1a2e4a;
+  box-shadow: 0 0 0 3px rgba(26, 46, 74, 0.08);
+  outline: none;
+}
+
+/* ── Forgot password link ───────────────────────────────── */
+
+.forgot-link {
+  font-size: 0.78rem;
+  color: #1a2e4a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Checkbox ───────────────────────────────────────────── */
+
+.form-check-input {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 3px;
+  border: 1.5px solid #adb5bd;
+  cursor: pointer;
+  margin-top: 0.12rem;
+}
+
+.form-check-input:checked {
+  background-color: #1a2e4a;
+  border-color: #1a2e4a;
+}
+
+.remember-label {
+  font-size: 0.82rem;
+  color: #444;
+  cursor: pointer;
+}
+
+/* ── Primary button ─────────────────────────────────────── */
+
+.login-btn {
+  background: #1a2e4a;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  transition: background 0.18s ease, transform 0.1s ease;
+}
+
+.login-btn:hover {
+  background: #0d1f35;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ── Divider ────────────────────────────────────────────── */
+
+.divider-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.35rem 0 1rem;
+}
+
+.divider-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+/* ── Google button ──────────────────────────────────────── */
+
+.google-btn {
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.58rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.google-btn:hover {
+  background: #f5f5f5;
+  border-color: #b0b5bc;
+  color: #111;
+}
+
+/* ── Bottom CTA ─────────────────────────────────────────── */
+
+.register-cta {
+  font-size: 0.84rem;
+  color: #555;
+}
+
+.register-link {
+  color: #1a7be4;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .auth-right {
+    display: none;
+  }
+
+  .auth-left {
+    flex: 1;
+    max-width: 100%;
+    padding: 1.5rem 1.2rem;
+  }
+
+  .auth-form-container {
+    max-width: 100%;
+  }
+}
