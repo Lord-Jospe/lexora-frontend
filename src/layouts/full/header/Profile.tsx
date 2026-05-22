@@ -1,95 +1,86 @@
-import { useState, useRef, useEffect } from 'react';
+//import { useState, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
-
-const menuItems = [
-  { label: 'Mi perfil',     url: '/admin/perfil',          icon: 'solar:user-linear'         },
-  { label: 'Configuración', url: '/admin/configuraciones',  icon: 'solar:settings-linear'     },
-];
+import { useNavigate } from 'react-router';
+import SimpleBar from 'simplebar-react';
+import profileimg from '../../../assets/profile-user.png';
+import * as profileData from './data';
+ 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../../components/ui/dropdown-menu';
+import { Button } from '../../../components/ui/button';
 
 const Profile = () => {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  const navigate = useNavigate();
+
+
+  const handleLogout = () => {
+    navigate('/login');
+  };
+
 
   return (
-    <div ref={ref} className="relative ml-1">
-      {/* Trigger */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-xl px-2 py-1.5
-                   hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-      >
-        {/* Avatar placeholder — reemplaza por <img> cuando tengas la foto */}
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600
-                        flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-          JF
-        </div>
-        <div className="hidden sm:block text-left">
-          <p className="text-sm font-semibold text-gray-800 dark:text-white leading-tight">
-            Joseph Ferrer
-          </p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 leading-tight">
-            Empresa Fruver
-          </p>
-        </div>
-        <Icon
-          icon="solar:alt-arrow-down-linear"
-          width={14}
-          className={`hidden sm:block text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        />
-      </button>
+    <div className="relative group/menu ps-1 sm:ps-15 shrink-0">
+      <div>
+        Nombre del Usuario
+      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <span className="hover:text-primary hover:bg-lightprimary rounded-full flex justify-center items-center cursor-pointer group-hover/menu:bg-lightprimary group-hover/menu:text-primary">
+            <img src={profileimg} alt="logo" height="35" width="35" className="rounded-full" />
+          </span>
+        </DropdownMenuTrigger>
 
-      {/* Dropdown */}
-      {open && (
-        <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-900
-                        border border-gray-200 dark:border-gray-700
-                        rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+        <DropdownMenuContent
+          align="end"
+          className="w-screen sm:w-[200px] pb-6 pt-4 rounded-sm"
+        >
+          <SimpleBar>
+            {profileData.profileDD.map((items, index) => (
+              <DropdownMenuItem
+                key={index}
+                asChild
+                className="px-4 py-2 flex justify-between items-center bg-hover group/link w-full cursor-pointer"
+              >
+                <Link to={items.url}>
+                  <div className="w-full">
+                    <div className="ps-0 flex items-center gap-3 w-full">
+                      <Icon
+                        icon={items.icon}
+                        className="text-lg text-muted-foreground group-hover/link:text-primary"
+                      />
+                      <div className="w-3/4">
+                        <h5 className="mb-0 text-sm text-muted-foreground group-hover/link:text-primary">
+                          {items.title}
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </SimpleBar>
 
-          {/* Info header */}
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-            <p className="text-sm font-semibold text-gray-800 dark:text-white">Joseph Ferrer</p>
-            <p className="text-xs text-gray-400 mt-0.5">Empresa Fruver</p>
-          </div>
+          <DropdownMenuSeparator className='my-2' />
 
-          {/* Links */}
-          {menuItems.map((item) => (
-            <Link
-              key={item.url}
-              to={item.url}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm
-                         text-gray-600 dark:text-gray-300
-                         hover:bg-gray-50 dark:hover:bg-gray-800
-                         hover:text-violet-600 dark:hover:text-violet-400
-                         transition-colors"
+          <div className="pt-2 px-4">
+            <Button
+              asChild
+              variant="outline"
+              className="w-full rounded-md"
+              onClick={handleLogout}
             >
-              <Icon icon={item.icon} width={16} className="text-gray-400" />
-              {item.label}
-            </Link>
-          ))}
-
-          {/* Logout */}
-          <div className="border-t border-gray-100 dark:border-gray-800 mt-1 pt-1">
-            <button
-              onClick={() => console.log('logout — pendiente implementar')}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm
-                         text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20
-                         transition-colors"
-            >
-              <Icon icon="solar:logout-2-linear" width={16} />
-              Cerrar sesión
-            </button>
+              <Link to="/login">Logout</Link>
+            </Button>
           </div>
-        </div>
-      )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
