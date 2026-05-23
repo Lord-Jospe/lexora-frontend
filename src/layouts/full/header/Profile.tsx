@@ -14,13 +14,15 @@ import {
   DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
 import { Button } from '../../../components/ui/button';
+import { useAuth } from '../../../context/authContext';
 
 const Profile = () => {
-
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
 
   const handleLogout = () => {
+    logout();
     navigate('/login');
   };
 

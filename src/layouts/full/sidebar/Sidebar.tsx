@@ -1,11 +1,19 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import adminItems, { type MenuItem, type ChildItem } from '../sidebar/itemSidebar';
 import FullLogo from '../../logo/FullLogo';
 import '../../css/sidebar.css';
+import { useAuth } from '../../../context/authContext';
 
 const SidebarLayout = ({ onClose }: { onClose?: () => void }) => {
   const { pathname } = useLocation();
+  const { logout }   = useAuth();
+  const navigate     = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <aside className="sidebar-root">
@@ -48,7 +56,7 @@ const SidebarLayout = ({ onClose }: { onClose?: () => void }) => {
       <div className="sidebar-footer">
         <button
           className="sidebar-logout"
-          onClick={() => console.log('logout — pendiente implementar')}
+          onClick={handleLogout}
         >
           <span className="sidebar-item-icon">
             <Icon icon="solar:logout-2-linear" width={18} height={18} />

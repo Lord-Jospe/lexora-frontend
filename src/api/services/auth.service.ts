@@ -26,4 +26,11 @@ export const register = async (data: RegisterRequest) => {
         console.error('Register error:', error);
         throw error;
     }
+
+};
+
+export const logout = async () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("token_type");
+    localStorage.removeItem("user");
 };

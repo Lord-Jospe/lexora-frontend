@@ -10,15 +10,29 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, error }) => {
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
+
+    // Validación local antes de llamar al backend
+    if (!email.trim() || !password.trim()) {
+      setLocalError("Por favor ingresa tu correo y contraseña.");
+      return;
+    }
+
     onSubmit?.({ email, password, remember });
   };
 
   const handleGoogleLogin = () => {
     console.log("Google login — pendiente implementar");
   };
+
+  // Muestra el error local (validación) o el del backend
+  const displayError = localError ?? error;
+
 
   return (
     <div className="login-form-wrapper">
@@ -27,10 +41,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, error }) => {
         ¡Bienvenido de nuevo! Introduce tus credenciales para continuar.
       </p>
 
-      {/* ── Error del backend ── */}
-      {error && (
+      {/* ── Error ── */}
+      {displayError && (
         <div className="alert alert-danger py-2 px-3 mb-3 rounded-3 small">
-          {error}
+          {displayError}
         </div>
       )}
 

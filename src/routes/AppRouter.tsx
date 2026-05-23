@@ -1,9 +1,11 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 //import { Children, lazy } from 'react';
 
 import LoginPage from '../views/auth/login/loginPage';
 import RegisterPage from "../views/auth/register/registerPage";
 import Loadable from "../layouts/shared/loadable/loadable";
+import PrivateRoute from "./PrivateRoute";
+
 import { lazy } from "react";
 
 const ConfiguracionesPage = Loadable(lazy(() => import('../views/admin/ConfiguracionesPage')));
@@ -14,6 +16,12 @@ const RevisionFacturasPage = Loadable(lazy(() => import('../views/admin/Revision
 const MainContent = Loadable(lazy(() => import('../layouts/MainContent')));
 
 const AppRouter = [
+    
+    // Redirige raíz al login
+    {
+        path: "/",
+        element: <Navigate to="/login" replace />,
+    },
     {
         path: '/login',
         element: <LoginPage />,
@@ -23,31 +31,21 @@ const AppRouter = [
         element: <RegisterPage />,
     },
     {
-        path: '/admin',
-        element: <MainContent />,
+        element: <PrivateRoute />,
         children: [
-            {
-                path: 'configuraciones',
-                element: <ConfiguracionesPage />,
-            },
-
-            {
-                path: 'historial-facturas',
-                element: <HistorialFacturasPage />,
-            },
-
-            {
-                path: 'revision-facturas',
-                element: <RevisionFacturasPage />,
-            },
-
-            {
-                path: 'cargar-documentos',
-                element: <CargarDocumentosPage />,
+        {
+            path: "/admin",
+            element: <MainContent />,
+            children: [
+                { index: true, element: <Navigate to="cargar-documentos" replace /> },
+                { path: "cargar-documentos",  element: <CargarDocumentosPage />  },
+                { path: "historial-facturas", element: <HistorialFacturasPage /> },
+                { path: "revision-facturas",  element: <RevisionFacturasPage />  },
+                { path: "configuraciones",    element: <ConfiguracionesPage />   },
+                ],
             },
         ],
-    }
-
+    },
 ];
 
 const router = createBrowserRouter(AppRouter);
