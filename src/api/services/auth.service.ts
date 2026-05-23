@@ -3,8 +3,14 @@ import type { LoginRequest, RegisterRequest } from '../../types/auth.type';
 
 
 export const login = async (data: LoginRequest) => {
+    const formData = new URLSearchParams();
+    formData.append("username", data.email);
+    formData.append("password", data.password);
+    
     try {
-        const response = await api.post('/auth/login', data);
+        const response = await api.post('/auth/login', formData, {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        });
         return response.data;
     } catch (error) {
         console.error('Login error:', error);
