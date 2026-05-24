@@ -1,13 +1,18 @@
 import { useState, useRef, useCallback } from 'react';
 import { Icon } from '@iconify/react';
+import { useNavigate } from 'react-router-dom';
+import { processInvoice } from '../../api/services/invoice.service';
+import { getErrorMessage } from '../../utils/errorHandler';
+import type { ProcessInvoiceResponse } from '../../types/invoice.type';
 
-type FileStatus = 'idle' | 'invalid' | 'ready';
+type FileStatus = 'idle' | 'invalid' | 'ready' | 'processing';
 
 interface UploadedFile {
   name: string;
   size: string;
   format: string;
   preview?: string;
+  raw: File;           // archivo original para enviarlo al backend
 }
 
 const VALID_FORMATS = ['pdf', 'jpg', 'jpeg', 'png'];
@@ -18,9 +23,12 @@ const formatBytes = (bytes: number): string => {
 };
 
 const CargarDocumentosPage = () => {
+  const navigate = useNavigate();
+
   const [status, setStatus]     = useState<FileStatus>('idle');
   const [file, setFile]         = useState<UploadedFile | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [error, setError]       = useState<string | null>(null);
   const fileInputRef            = useRef<HTMLInputElement>(null);
   const cameraInputRef          = useRef<HTMLInputElement>(null);
 
@@ -34,8 +42,9 @@ const CargarDocumentosPage = () => {
     const preview = ['jpg', 'jpeg', 'png'].includes(ext)
       ? URL.createObjectURL(f)
       : undefined;
-    setFile({ name: f.name, size: formatBytes(f.size), format: ext.toUpperCase(), preview });
+    setFile({ name: f.name, size: formatBytes(f.size), format: ext.toUpperCase(), preview, raw: f });
     setStatus('ready');
+    setError(null);
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,9 +62,30 @@ const CargarDocumentosPage = () => {
   const handleCancel = () => {
     setStatus('idle');
     setFile(null);
+    setError(null);
     if (fileInputRef.current)   fileInputRef.current.value  = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
+
+  // ── Llama al backend ──────────────────────────────────────────────────────
+
+  const handleExtraerDatos = async () => {
+    if (!file) return;
+    setStatus('processing');
+    setError(null);
+
+    try {
+      const result: ProcessInvoiceResponse  = await processInvoice(file.raw);
+      // Redirige pasando los datos extraídos en el state
+      navigate('/admin/revision-facturas', { state: { invoice: result } });
+      console.log('Datos extraídos:', result);
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
+      setStatus('ready'); // vuelve a ready para que pueda reintentar
+    }
+  };
+
+  const isProcessing = status === 'processing';
 
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -85,14 +115,14 @@ const CargarDocumentosPage = () => {
         </p>
 
         <div className="flex gap-4 flex-wrap justify-center w-full max-w-2xl">
-          {/* Subir factura */}
           <button
             onClick={() => fileInputRef.current?.click()}
+            disabled={isProcessing}
             className="flex-1 min-w-[200px] flex flex-col items-center gap-2
                        bg-dark text-white font-semibold text-[15px]
-                       py-5 px-6 rounded-xl
-                       hover:opacity-80 hover:shadow-lg
-                       transition-all duration-200 cursor-pointer"
+                       py-5 px-6 rounded-xl hover:opacity-80 hover:shadow-lg
+                       transition-all duration-200 cursor-pointer
+                       disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>Subir factura</span>
             <Icon icon="solar:upload-linear" width={22} />
@@ -105,14 +135,14 @@ const CargarDocumentosPage = () => {
             />
           </button>
 
-          {/* Tomar foto */}
           <button
             onClick={() => cameraInputRef.current?.click()}
+            disabled={isProcessing}
             className="flex-1 min-w-[200px] flex flex-col items-center gap-2
                        bg-dark text-white font-semibold text-[15px]
-                       py-5 px-6 rounded-xl
-                       hover:opacity-80 hover:shadow-lg
-                       transition-all duration-200 cursor-pointer"
+                       py-5 px-6 rounded-xl hover:opacity-80 hover:shadow-lg
+                       transition-all duration-200 cursor-pointer
+                       disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>Tomar foto</span>
             <Icon icon="solar:camera-linear" width={22} />
@@ -136,11 +166,17 @@ const CargarDocumentosPage = () => {
         </div>
       )}
 
-      {/* ── Preview ── */}
-      {status === 'ready' && file && (
-        <div className="flex items-start gap-10 flex-wrap">
+      {/* ── Error del backend ── */}
+      {error && (
+        <div className="flex items-center gap-3 px-5 py-4 rounded-xl bg-lighterror text-error font-medium text-sm w-full">
+          <Icon icon="solar:danger-triangle-bold" width={22} className="flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
-          {/* Thumbnail */}
+      {/* ── Preview ── */}
+      {(status === 'ready' || status === 'processing') && file && (
+        <div className="flex items-start gap-10 flex-wrap">
           <div className="flex flex-col items-center gap-2 w-40">
             {file.preview ? (
               <img
@@ -162,7 +198,6 @@ const CargarDocumentosPage = () => {
             </span>
           </div>
 
-          {/* Metadata */}
           <ul className="mt-4 flex flex-col gap-3">
             <li className="flex items-center gap-3 text-sm text-foreground">
               <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
@@ -177,23 +212,35 @@ const CargarDocumentosPage = () => {
       )}
 
       {/* ── Acciones ── */}
-      {status === 'ready' && (
+      {(status === 'ready' || status === 'processing') && (
         <div className="flex justify-end gap-3 pt-2 pb-6">
           <button
             onClick={handleCancel}
+            disabled={isProcessing}
             className="px-7 py-2.5 rounded-xl text-sm font-semibold
                        border border-border text-foreground
-                       hover:bg-muted transition-colors cursor-pointer"
+                       hover:bg-muted transition-colors cursor-pointer
+                       disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancelar
           </button>
           <button
+            onClick={handleExtraerDatos}
+            disabled={isProcessing}
             className="px-7 py-2.5 rounded-xl text-sm font-semibold
-                       bg-violet-500 text-white
-                       hover:bg-violet-600 shadow-btn-shadow
-                       transition-all duration-200 cursor-pointer"
+                       bg-violet-500 text-white hover:bg-violet-600
+                       shadow-btn-shadow transition-all duration-200 cursor-pointer
+                       disabled:opacity-60 disabled:cursor-not-allowed
+                       flex items-center gap-2"
           >
-            Extraer datos
+            {isProcessing ? (
+              <>
+                <Icon icon="solar:refresh-linear" width={16} className="animate-spin" />
+                Procesando...
+              </>
+            ) : (
+              'Extraer datos'
+            )}
           </button>
         </div>
       )}
