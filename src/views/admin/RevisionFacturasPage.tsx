@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+
 import { saveInvoice } from '../../api/services/invoice.service';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { useAuth } from '../../context/authContext';
@@ -47,9 +48,12 @@ const RevisionFacturasPage = () => {
   const { state } = useLocation();
   const navigate  = useNavigate();
   const { user }  = useAuth();
+    const [zoom, setZoom] = useState(1);
 
-  // Lo que viene del navigate en CargarDocumentosPage
+  // ← NUEVO: Extraer fileUrl y fileType del state
   const data: ProcessInvoiceResponse | null = state?.invoice ?? null;
+  const fileUrl: string | null = state?.fileUrl ?? null;
+  const fileType: string | null = state?.fileType ?? null;
   const ocr = data?.ocr_result ?? null;
 
   // ── Hooks antes de cualquier return condicional ──
@@ -76,11 +80,12 @@ const RevisionFacturasPage = () => {
   // ── Guardar ──────────────────────────────────────────────────────────────
 
   const handleGuardar = async () => {
+    console.log('user:', user);
     if (!user?.id) return;
-    setSaving(true);
-    setError(null);
+        setSaving(true);
+        setError(null);
 
-    // Convierte los items del OCR al formato que espera el backend
+    console.log('📄 Datos OCR completos:', ocr);
     const items = ocr.items?.map((item) => ({
       description: String(item.description?.value ?? ''),
       quantity:    item.quantity?.value   ?? undefined,
@@ -88,7 +93,6 @@ const RevisionFacturasPage = () => {
       total:       item.total?.value      ?? undefined,
     })) ?? [];
 
-    // Convierte todos los campos extraídos a ExtractedFieldCreate
     const extracted_fields = [
       { field_name: 'invoice_number', field_value: fields.invoice_number, confidence: ocr.invoice.invoice_number?.confidence },
       { field_name: 'issue_date',     field_value: fields.issue_date,     confidence: ocr.invoice.issue_date?.confidence     },
@@ -100,6 +104,7 @@ const RevisionFacturasPage = () => {
       { field_name: 'nit',            field_value: fields.provider_nit,   confidence: ocr.provider.nit?.confidence           },
     ];
 
+    // ← NUEVO: Incluir file_url y file_type
     const payload: InvoiceSaveRequest = {
       user_id:        user.id,
       invoice_number: fields.invoice_number,
@@ -109,6 +114,8 @@ const RevisionFacturasPage = () => {
       total:          parseFloat(fields.total)    || undefined,
       category:       fields.category             || undefined,
       status:         'PENDING',
+      file_url:       fileUrl ?? undefined,
+      file_type:      fileType ?? undefined,
       provider: {
         name:       fields.provider_name,
         nit:        fields.provider_nit        || undefined,
@@ -119,9 +126,12 @@ const RevisionFacturasPage = () => {
     };
 
     try {
-      await saveInvoice(payload);
+      const response = await saveInvoice(payload);
+      console.log('✅ Respuesta del backend:', response);
+
       navigate('/admin/historial-facturas');
     } catch (err: unknown) {
+        console.error('❌ Error al guardar:', err);
       setError(getErrorMessage(err));
     } finally {
       setSaving(false);
@@ -132,7 +142,6 @@ const RevisionFacturasPage = () => {
 
   return (
     <div className="revision-page">
-
       <div className="revision-title-block">
         <h1 className="revision-title">Visualización</h1>
         <p className="revision-subtitle">
@@ -142,19 +151,61 @@ const RevisionFacturasPage = () => {
 
       <div className="revision-split">
 
-        {/* ── Visor izquierdo ── */}
+       {/* ── Visor izquierdo ── */}
         <div className="revision-viewer">
-          <div className="viewer-toolbar">
-            <button className="viewer-btn"><Icon icon="solar:add-linear" width={16} /></button>
-            <span className="viewer-zoom">100%</span>
-            <button className="viewer-btn"><Icon icon="solar:minus-linear" width={16} /></button>
-          </div>
-          <div className="viewer-body">
-            <div className="viewer-empty">
-              <Icon icon="solar:file-text-linear" width={48} className="viewer-empty-icon" />
-              <p>{data.filename}</p>
+            <div className="viewer-toolbar">
+                <button 
+                className="viewer-btn"
+                onClick={() => setZoom(z => Math.min(z + 0.2, 3))}
+                title="Zoom in"
+                >
+                <Icon icon="solar:add-linear" width={16} />
+                </button>
+                <span className="viewer-zoom">{Math.round(zoom * 100)}%</span>
+                <button 
+                className="viewer-btn"
+                onClick={() => setZoom(z => Math.max(z - 0.2, 0.5))}
+                title="Zoom out"
+                >
+                <Icon icon="solar:minus-linear" width={16} />
+                </button>
             </div>
-          </div>
+            <div className="viewer-body" style={{ overflow: 'auto' }}>
+                {fileUrl ? (
+                fileType === 'pdf' ? (
+                    <iframe 
+                    src={fileUrl}
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    title="Document Viewer"
+                    />
+                ) : (
+                    <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%'
+                    }}>
+                    <img 
+                        src={fileUrl}
+                        alt={data.filename}
+                        style={{ 
+                        transform: `scale(${zoom})`,
+                        transition: 'transform 0.2s ease-in-out',
+                        maxWidth: '100%',
+                        objectFit: 'contain',
+                        cursor: 'grab'
+                        }}
+                    />
+                    </div>
+                )
+                ) : (
+                <div className="viewer-empty">
+                    <Icon icon="solar:file-text-linear" width={48} className="viewer-empty-icon" />
+                    <p>{data.filename}</p>
+                </div>
+                )}
+            </div>
         </div>
 
         {/* ── Panel derecho ── */}

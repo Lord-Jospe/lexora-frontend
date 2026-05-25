@@ -39,6 +39,7 @@ export interface OCRResult {
 // Lo que devuelve POST /invoices/process
 export interface ProcessInvoiceResponse {
   filename:   string;
+  file_url:   string;  
   ocr_result: OCRResult;
 }
 
@@ -66,6 +67,8 @@ export interface InvoiceSaveRequest {
   total?:           number;
   category?:        string;
   status?:          string;
+  file_url?:        string;  
+  file_type?:       string;  
   provider:         PartyCreate;
   items?:           InvoiceItemCreate[];
   extracted_fields?: ExtractedFieldCreate[];

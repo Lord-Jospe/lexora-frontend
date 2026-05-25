@@ -29,6 +29,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response: AuthResponse = await loginService(data);
     // Guarda el token en estado y en localStorage (persiste al recargar)
     setToken(response.access_token);
+    setUser(response.user);
+    setToken(response.access_token);
     localStorage.setItem('token', response.access_token);
     return response;
   };

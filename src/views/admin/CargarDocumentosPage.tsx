@@ -12,7 +12,7 @@ interface UploadedFile {
   size: string;
   format: string;
   preview?: string;
-  raw: File;           // archivo original para enviarlo al backend
+  raw: File;
 }
 
 const VALID_FORMATS = ['pdf', 'jpg', 'jpeg', 'png'];
@@ -67,21 +67,27 @@ const CargarDocumentosPage = () => {
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
-  // ── Llama al backend ──────────────────────────────────────────────────────
-
   const handleExtraerDatos = async () => {
     if (!file) return;
     setStatus('processing');
     setError(null);
 
     try {
-      const result: ProcessInvoiceResponse  = await processInvoice(file.raw);
-      // Redirige pasando los datos extraídos en el state
-      navigate('/admin/revision-facturas', { state: { invoice: result } });
+      const result: ProcessInvoiceResponse = await processInvoice(file.raw);
+      
+      // ← NUEVO: Pasar file_url y file_type al estado
+      navigate('/admin/revision-facturas', { 
+        state: { 
+          invoice: result,
+          fileUrl: result.file_url,
+          fileType: file.format.toLowerCase()
+        } 
+      });
       console.log('Datos extraídos:', result);
+    
     } catch (err: unknown) {
       setError(getErrorMessage(err));
-      setStatus('ready'); // vuelve a ready para que pueda reintentar
+      setStatus('ready');
     }
   };
 
