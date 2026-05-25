@@ -20,7 +20,8 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      await login({ email: data.email, password: data.password });
+      const usuario = await login({ email: data.email, password: data.password });
+      console.log("✅ Usuario autenticado:", usuario);
       navigate("/admin");
     } catch (err: unknown) {
       

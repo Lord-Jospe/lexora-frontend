@@ -1,0 +1,287 @@
+/* ── Loading / Error ── */
+.detalle-loading,
+.detalle-error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 300px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+.detalle-back-btn {
+  margin-top: 8px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Page ── */
+.detalle-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ── Header ── */
+.detalle-header { display: flex; flex-direction: column; gap: 6px; }
+
+.detalle-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+  width: fit-content;
+}
+.detalle-back:hover { color: var(--primary); }
+
+.detalle-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+/* ── Info card ── */
+.detalle-info-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.detalle-info-left { display: flex; flex-direction: column; gap: 4px; }
+
+.detalle-info-label {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.detalle-info-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.detalle-provider-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.detalle-nit {
+  font-size: 14px;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.detalle-nit-label {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.detalle-info-meta {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.detalle-meta-item { display: flex; flex-direction: column; gap: 2px; }
+
+.detalle-meta-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
+/* Status badge */
+.detalle-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.detalle-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.detalle-badge--processed { background: #dcfce7; color: #16a34a; border-color: #bbf7d0; }
+.detalle-badge--processed .detalle-status-dot { background: #16a34a; }
+.detalle-badge--pending   { background: #fef9c3; color: #a16207; border-color: #fde68a; }
+.detalle-badge--pending   .detalle-status-dot { background: #a16207; }
+.detalle-badge--error     { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+.detalle-badge--error     .detalle-status-dot { background: #dc2626; }
+
+/* ── Products ── */
+.detalle-products { display: flex; flex-direction: column; gap: 12px; }
+
+.detalle-products-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.detalle-table-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.detalle-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.detalle-table thead tr {
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+}
+
+.detalle-table th {
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.detalle-table td {
+  padding: 13px 20px;
+  font-size: 13.5px;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
+}
+.detalle-table tbody tr:last-child td { border-bottom: none; }
+
+.detalle-total-row td {
+  font-weight: 700;
+  font-size: 14px;
+  background: var(--muted);
+  border-bottom: none;
+}
+
+.detalle-empty-items {
+  text-align: center;
+  color: var(--muted-foreground);
+  padding: 40px !important;
+}
+
+/* ── Actions ── */
+.detalle-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 24px;
+}
+
+/* Export dropdown */
+.detalle-export-wrap { position: relative; }
+
+.detalle-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background: var(--dark);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.detalle-export-btn:hover:not(:disabled) { opacity: 0.85; }
+.detalle-export-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.detalle-export-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  overflow: hidden;
+  z-index: 50;
+  min-width: 140px;
+}
+
+.detalle-export-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s;
+  text-align: left;
+}
+.detalle-export-item:hover { background: var(--muted); }
+
+/* Confirm btn */
+.detalle-confirm-btn {
+  padding: 10px 28px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-btn-shadow);
+}
+.detalle-confirm-btn:hover {
+  background: var(--primaryemphasis);
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .detalle-info-card { flex-direction: column; align-items: flex-start; }
+  .detalle-info-meta { gap: 16px; }
+  .detalle-actions   { flex-direction: column; align-items: stretch; }
+  .detalle-export-btn,
+  .detalle-confirm-btn { width: 100%; justify-content: center; }
+}
