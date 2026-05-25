@@ -1,11 +1,8 @@
-//import { useState, useRef } from 'react';
 import { Icon } from '@iconify/react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router';
-import SimpleBar from 'simplebar-react';
+import { useNavigate } from 'react-router-dom';
 import profileimg from '../../../assets/profile-user.png';
 import * as profileData from './data';
- 
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
-import { Button } from '../../../components/ui/button';
 import { useAuth } from '../../../context/authContext';
+import '../../../css/component/profile.css';
 
 const Profile = () => {
   const { logout, user } = useAuth();
@@ -25,60 +22,81 @@ const Profile = () => {
     navigate('/login');
   };
 
-
   return (
-    <div className="relative group/menu ps-1 sm:ps-15 shrink-0">
-      <div>
-        {user?.name || "Nombre del Usuario"}
-      </div>
+    <div className="profile-container">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <span className="hover:text-primary hover:bg-lightprimary rounded-full flex justify-center items-center cursor-pointer group-hover/menu:bg-lightprimary group-hover/menu:text-primary">
-            <img src={profileimg} alt="logo" height="35" width="35" className="rounded-full" />
-          </span>
+          <button className="profile-trigger">
+            <img 
+              src={profileimg} 
+              alt="profile" 
+              className="profile-avatar" 
+            />
+            <div className="profile-info">
+              <p className="profile-name">{user?.name || "Usuario"}</p>
+              <p className="profile-role">Administrador</p>
+            </div>
+            <Icon 
+              icon="solar:alt-arrow-down-linear" 
+              width={16} 
+              className="profile-chevron"
+            />
+          </button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
           align="end"
-          className="w-screen sm:w-[200px] pb-6 pt-4 rounded-sm"
+          className="profile-dropdown w-[240px] p-0"
         >
-          <SimpleBar>
-            {profileData.profileDD.map((items, index) => (
+          {/* Header del dropdown */}
+          <div className="profile-dropdown-header">
+            <img 
+              src={profileimg} 
+              alt="profile" 
+              className="profile-dropdown-avatar"
+            />
+            <div>
+              <h4 className="profile-dropdown-name">{user?.name || "Usuario"}</h4>
+              <p className="profile-dropdown-email">{user?.email || "email@example.com"}</p>
+            </div>
+          </div>
+
+          <DropdownMenuSeparator className="my-2" />
+
+          {/* Items del menú */}
+          <div className="profile-dropdown-items">
+            {profileData.profileDD.map((item, index) => (
               <DropdownMenuItem
                 key={index}
                 asChild
-                className="px-4 py-2 flex justify-between items-center bg-hover group/link w-full cursor-pointer"
+                className="profile-dropdown-item"
               >
-                <Link to={items.url}>
-                  <div className="w-full">
-                    <div className="ps-0 flex items-center gap-3 w-full">
-                      <Icon
-                        icon={items.icon}
-                        className="text-lg text-muted-foreground group-hover/link:text-primary"
-                      />
-                      <div className="w-3/4">
-                        <h5 className="mb-0 text-sm text-muted-foreground group-hover/link:text-primary">
-                          {items.title}
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <button onClick={() => navigate(item.url)}>
+                  <Icon 
+                    icon={item.icon} 
+                    width={16} 
+                    className="profile-item-icon"
+                  />
+                  <span>{item.title}</span>
+                </button>
               </DropdownMenuItem>
             ))}
-          </SimpleBar>
+          </div>
 
-          <DropdownMenuSeparator className='my-2' />
+          <DropdownMenuSeparator className="my-2" />
 
-          <div className="pt-2 px-4">
-            <Button
-              asChild
-              variant="outline"
-              className="w-full rounded-md"
+          {/* Logout */}
+          <div className="profile-dropdown-footer">
+            <button 
+              className="profile-logout-btn"
               onClick={handleLogout}
             >
-              <Link to="/login">Logout</Link>
-            </Button>
+              <Icon 
+                icon="solar:logout-2-linear" 
+                width={16}
+              />
+              <span>Cerrar sesión</span>
+            </button>
           </div>
         </DropdownMenuContent>
       </DropdownMenu>

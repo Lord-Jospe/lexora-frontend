@@ -47,10 +47,10 @@
   display: block;
 }
 
-/* ── Nav ── */
+/* ── Nav (scrollable) ── */
 .sidebar-nav {
   flex: 1;
-  overflow-y: visible;
+  overflow-y: auto;  /* ← Vuelve a auto para scroll */
   padding: 14px 10px;
   scrollbar-width: thin;
   scrollbar-color: #e5e5f0 transparent;
@@ -70,6 +70,7 @@
   text-transform: uppercase;
   color: #b0b0c8;
   padding: 10px 12px 5px;
+  margin: 0;
 }
 .dark .sidebar-heading { color: #4a4a6a; }
 
@@ -140,22 +141,21 @@
   color: #a78bfa;
 }
 
-/* ── FACTURAS PROCESADAS ── */
-.sidebar-invoices {
-  padding: 16px;
+/* ── FACTURAS PROCESADAS (NUEVA SECCIÓN) ── */
+.sidebar-invoices-section {
+  flex-shrink: 0;
+  padding: 12px 0;
+  margin-top: 8px;
   border-top: 1px solid #f0f0f5;
-  margin-top: auto;
-  margin-bottom: 70px;
+  border-bottom: 1px solid #f0f0f5;
+  max-height: 160px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e5e5f0 transparent;
 }
-.dark .sidebar-invoices {
+.dark .sidebar-invoices-section {
   border-top-color: #1e1e2a;
-}
-
-.sidebar-invoices-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  border-bottom-color: #1e1e2a;
 }
 
 .sidebar-invoices-title {
@@ -170,6 +170,22 @@
   color: #4a4a6a;
 }
 
+.sidebar-invoices-section::-webkit-scrollbar { width: 4px; }
+.sidebar-invoices-section::-webkit-scrollbar-thumb {
+  background: #e5e5f0;
+  border-radius: 4px;
+}
+.dark .sidebar-invoices-section::-webkit-scrollbar-thumb { background: #2a2a3a; }
+
+.sidebar-invoices-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 12px;
+  gap: 8px;
+}
+
 .sidebar-invoices-link {
   display: flex;
   align-items: center;
@@ -182,6 +198,7 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .sidebar-invoices-link:hover {
@@ -196,44 +213,15 @@
 .sidebar-invoices-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 220px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #e5e5f0 transparent;
-}
-
-/* Scroll personalizado */
-.sidebar-invoices-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebar-invoices-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar-invoices-list::-webkit-scrollbar-thumb {
-  background: #e5e5f0;
-  border-radius: 2px;
-}
-
-.sidebar-invoices-list::-webkit-scrollbar-thumb:hover {
-  background: #d0d0e8;
-}
-
-.dark .sidebar-invoices-list::-webkit-scrollbar-thumb {
-  background: #2a2a3a;
-}
-
-.dark .sidebar-invoices-list::-webkit-scrollbar-thumb:hover {
-  background: #3a3a4a;
+  gap: 4px;
+  padding: 0 10px;
 }
 
 .sidebar-invoice-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 8px;
+  gap: 8px;
+  padding: 8px 10px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
@@ -242,6 +230,7 @@
   width: 100%;
   text-align: left;
   font-family: inherit;
+  font-size: 12px;
 }
 
 .sidebar-invoice-item:hover {
@@ -255,8 +244,8 @@
 
 .sidebar-invoice-status {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   display: inline-block;
 }
@@ -267,22 +256,24 @@
 }
 
 .sidebar-invoice-provider {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #1f2937;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 .dark .sidebar-invoice-provider {
   color: #f3f4f6;
 }
 
 .sidebar-invoice-number {
-  font-size: 11px;
+  font-size: 10px;
   color: #6b6b8a;
   margin: 2px 0 0 0;
+  line-height: 1.2;
 }
 .dark .sidebar-invoice-number {
   color: #7a7a9a;
@@ -307,11 +298,9 @@
   flex-shrink: 0;
   padding: 10px;
   border-top: 1px solid #f0f0f5;
-  position: relative;
-  z-index: 5;
 }
 .dark .sidebar-footer { 
-  border-top-color: #1e1e2a; 
+  border-top-color: #1e1e2a;
 }
 
 .sidebar-logout {
