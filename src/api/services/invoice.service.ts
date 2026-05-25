@@ -60,10 +60,14 @@ const exportMimeTypes: Record<ExportFormat, string> = {
 };
 
 export const exportInvoice = async (invoiceId: string, format: ExportFormat): Promise<void> => {
-  const response = await api.get(`/invoices/${invoiceId}/export/${format}`, { responseType: 'blob' });
-  const url  = URL.createObjectURL(new Blob([response.data], { type: exportMimeTypes[format] }));
+  const response = await api.get(
+    `/invoices/${invoiceId}/export/${format}`,
+    { responseType: 'blob' }  // ← El token se añade automáticamente por el interceptor
+  );
+  
+  const url = URL.createObjectURL(new Blob([response.data], { type: exportMimeTypes[format] }));
   const link = document.createElement('a');
-  link.href  = url;
+  link.href = url;
   link.download = `factura_${invoiceId}.${format}`;
   document.body.appendChild(link);
   link.click();

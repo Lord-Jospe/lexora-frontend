@@ -17,10 +17,9 @@ import { Button } from '../../../components/ui/button';
 import { useAuth } from '../../../context/authContext';
 
 const Profile = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
-
-
+  
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -30,7 +29,7 @@ const Profile = () => {
   return (
     <div className="relative group/menu ps-1 sm:ps-15 shrink-0">
       <div>
-        Nombre del Usuario
+        {user?.name || "Nombre del Usuario"}
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

@@ -55,18 +55,19 @@ const DetalleFacturaPage = () => {
     load();
   }, [id]);
 
-  const handleExport = async (format: 'csv' | 'xml' | 'pdf') => {
-    if (!id) return;
-    setExporting(true);
-    setExportOpen(false);
-    try {
-      await exportInvoice(id, format);
-    } catch (err: unknown) {
-      setError(getErrorMessage(err));
-    } finally {
-      setExporting(false);
-    }
-  };
+    const handleExport = async (format: 'csv' | 'xml' | 'pdf') => {
+        if (!id) return;
+        
+        setExporting(true);
+        setExportOpen(false);
+        try {
+            await exportInvoice(id, format);
+        } catch (err: unknown) {
+            setError(getErrorMessage(err));
+        } finally {
+            setExporting(false);
+        }
+    };
 
   // ── Loading ──
   if (loading) return (
