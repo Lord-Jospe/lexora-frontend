@@ -7,13 +7,15 @@ interface RegisterFormProps {
     password: string;
     terms: boolean;
   }) => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, loading, error }) => {
+  const [name, setName]         = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [terms, setTerms] = useState(false);
+  const [terms, setTerms]       = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,8 +23,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   };
 
   const handleGoogleRegister = () => {
-    // TODO: connect Google OAuth
-    console.log("Google register");
+    console.log("Google register — pendiente implementar");
   };
 
   return (
@@ -32,56 +33,61 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         Convierte tus documentos y facturas en archivos editables con Lexora!
       </p>
 
+      {/* ── Error del backend ── */}
+      {error && (
+        <div className="alert alert-danger py-2 px-3 mb-3 rounded-3 small">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} noValidate>
-        {/* Name */}
+        {/* Nombre */}
         <div className="form-group mb-3">
-          <label htmlFor="name" className="form-label">
-            Nombre
-          </label>
+          <label htmlFor="name" className="form-label">Nombre</label>
           <input
             id="name"
             type="text"
             className="form-control custom-input"
             placeholder="Ingresa tu nombre y apellido"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { setName(e.target.value); }}
             required
+            disabled={loading}
           />
         </div>
 
         {/* Email */}
         <div className="form-group mb-3">
-          <label htmlFor="reg-email" className="form-label">
-            Correo electrónico
-          </label>
+          <label htmlFor="reg-email" className="form-label">Correo electrónico</label>
           <input
             id="reg-email"
             type="email"
             className="form-control custom-input"
             placeholder="Ingresa tu correo electrónico"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); }}
             required
+            disabled={loading}
           />
         </div>
 
-        {/* Password */}
+        {/* Contraseña */}
         <div className="form-group mb-3">
-          <label htmlFor="reg-password" className="form-label">
-            Contraseña
-          </label>
+          <label htmlFor="reg-password" className="form-label">Contraseña</label>
           <input
             id="reg-password"
             type="password"
             className="form-control custom-input"
             placeholder="Contraseña"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => { setPassword(e.target.value); }}
             required
+            minLength={8}
+            disabled={loading}
           />
         </div>
 
-        {/* Terms */}
+        {/* Términos */}
         <div className="form-check mb-4">
           <input
             id="terms"
@@ -90,6 +96,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
             checked={terms}
             onChange={(e) => setTerms(e.target.checked)}
             required
+            disabled={loading}
           />
           <label htmlFor="terms" className="form-check-label remember-label">
             Acepto los términos y condiciones
@@ -97,8 +104,19 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         </div>
 
         {/* Submit */}
-        <button type="submit" className="btn btn-primary w-100 login-btn mb-3">
-          Empieza ahora
+        <button
+          type="submit"
+          className="btn btn-primary w-100 login-btn mb-3"
+          disabled={loading || !terms}
+        >
+          {loading ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" />
+              Registrando...
+            </>
+          ) : (
+            "Empieza ahora"
+          )}
         </button>
       </form>
 
@@ -112,6 +130,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         type="button"
         className="btn btn-outline-secondary w-100 google-btn mb-3"
         onClick={handleGoogleRegister}
+        disabled={loading}
       >
         <img
           src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -126,9 +145,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       {/* Login link */}
       <p className="text-center register-cta mb-0">
         ¿Ya tienes una cuenta?{" "}
-        <a href="/login" className="register-link">
-          Acceder
-        </a>
+        <a href="/login" className="register-link">Acceder</a>
       </p>
     </div>
   );

@@ -18,12 +18,12 @@ const itemSidebar: MenuItem[] = [
   {
     heading: 'Menú Principal',
     children: [
-      {
-        id: uniqueId(),
-        name: 'Home',
-        icon: 'solar:widget-2-linear',
-        url: '/admin',
-      },
+      // {
+      //   id: uniqueId(),
+      //   name: 'Home',
+      //   icon: 'solar:widget-2-linear',
+      //   url: '/admin',
+      // },
       {
         id: uniqueId(),
         name: 'Cargar documentos',
@@ -42,12 +42,12 @@ const itemSidebar: MenuItem[] = [
         icon: 'solar:users-group-rounded-linear',
         url: '/admin/historial-facturas',
       },
-      {
-        id: uniqueId(),
-        name: 'Configuraciones',
-        icon: 'solar:settings-linear',
-        url: '/admin/configuraciones',
-      },
+      // {
+      //   id: uniqueId(),
+      //    name: 'Configuraciones',
+      //   icon: 'solar:settings-linear',
+      //   url: '/admin/configuraciones',
+      // },
     ],
   },
 ];

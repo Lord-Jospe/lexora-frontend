@@ -5,27 +5,24 @@ import Header from './full/header/Header';
 
 const AdminLayout: FC = () => {
   return (
-    <>
-      <div className="flex w-full min-h-screen">
-        <div className="page-wrapper flex w-full ">
-          {/* Header/sidebar */}
-          <div className="xl:block hidden">
-            <Sidebar />
-          </div>
-          <div className="body-wrapper w-full bg-white dark:bg-dark">
-            {/* Top Header  */}
-            <Header />
+    <div className="min-h-screen bg-background flex">
 
-            {/* Body Content  */}
-            <div className={'container mx-auto px-6 py-30'}>
-              <main className="grow">
-                <Outlet />
-              </main>
-            </div>
-          </div>
-        </div>
+      {/* Sidebar — visible solo en xl, sticky via CSS */}
+      <div className="hidden xl:block shrink-0">
+        <Sidebar />
       </div>
-    </>
+
+      {/* Contenido principal */}
+      <div className="flex flex-col flex-1 min-w-0">
+        <Header />
+        <main className="flex-1">
+          <div className="mx-auto w-full max-w-7xl px-11 ">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+
+    </div>
   );
 };
 

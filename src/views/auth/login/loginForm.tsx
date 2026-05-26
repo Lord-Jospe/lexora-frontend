@@ -1,31 +1,53 @@
 import React, { useState } from "react";
- 
+
 interface LoginFormProps {
   onSubmit?: (data: { email: string; password: string; remember: boolean }) => void;
+  loading?: boolean;
+  error?: string | null;
 }
- 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
-  const [email, setEmail] = useState("");
+
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, error }) => {
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
- 
+  const [localError, setLocalError] = useState<string | null>(null);
+
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
+
+    // Validación local antes de llamar al backend
+    if (!email.trim() || !password.trim()) {
+      setLocalError("Por favor ingresa tu correo y contraseña.");
+      return;
+    }
+
     onSubmit?.({ email, password, remember });
   };
- 
+
   const handleGoogleLogin = () => {
-    // TODO: connect Google OAuth
-    console.log("Google login");
+    console.log("Google login — pendiente implementar");
   };
- 
+
+  // Muestra el error local (validación) o el del backend
+  const displayError = localError ?? error;
+
+
   return (
     <div className="login-form-wrapper">
       <h1 className="login-title">Ingresa a tu cuenta</h1>
       <p className="login-subtitle">
         ¡Bienvenido de nuevo! Introduce tus credenciales para continuar.
       </p>
- 
+
+      {/* ── Error ── */}
+      {displayError && (
+        <div className="alert alert-danger py-2 px-3 mb-3 rounded-3 small">
+          {displayError}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} noValidate>
         {/* Email */}
         <div className="form-group mb-3">
@@ -40,9 +62,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
- 
+
         {/* Password */}
         <div className="form-group mb-3">
           <div className="d-flex justify-content-between align-items-center">
@@ -61,9 +84,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
- 
+
         {/* Remember me */}
         <div className="form-check mb-4">
           <input
@@ -72,28 +96,41 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
             className="form-check-input"
             checked={remember}
             onChange={(e) => setRemember(e.target.checked)}
+            disabled={loading}
           />
           <label htmlFor="remember" className="form-check-label remember-label">
             Mantener sesión
           </label>
         </div>
- 
+
         {/* Submit */}
-        <button type="submit" className="btn btn-primary w-100 login-btn mb-3">
-          Iniciar sesión
+        <button
+          type="submit"
+          className="btn btn-primary w-100 login-btn mb-3"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" />
+              Iniciando sesión...
+            </>
+          ) : (
+            "Iniciar sesión"
+          )}
         </button>
       </form>
- 
+
       {/* Divider */}
       <div className="divider-row">
         <span className="divider-dot" />
       </div>
- 
+
       {/* Google */}
       <button
         type="button"
         className="btn btn-outline-secondary w-100 google-btn mb-3"
         onClick={handleGoogleLogin}
+        disabled={loading}
       >
         <img
           src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -102,18 +139,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           height={20}
           className="me-2"
         />
-        Inicia sesión con google
+        Inicia sesión con Google
       </button>
- 
+
       {/* Register link */}
       <p className="text-center register-cta mb-0">
         ¿Aún no tienes cuenta?{" "}
-        <a href="/register" className="register-link">
-          Regístrate
-        </a>
+        <a href="/register" className="register-link">Regístrate</a>
       </p>
     </div>
   );
 };
- 
+
 export default LoginForm;

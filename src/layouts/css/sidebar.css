@@ -1,8 +1,8 @@
 /* ── Root ── */
 .sidebar-root {
-  width: 270px;
+  width: 280px;
   height: 100vh;
-  position: fixed;
+  position: sticky;
   left: 0;
   top: 0;
   z-index: 10;
@@ -20,31 +20,37 @@
 
 /* ── Logo ── */
 .sidebar-logo {
-  padding: 20px 20px 16px;
+  padding: 24px 20px 20px;
   border-bottom: 1px solid #f0f0f5;
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 .dark .sidebar-logo {
   border-bottom-color: #1e1e2a;
 }
+
 .sidebar-logo a {
   display: flex;
   align-items: center;
-  gap: 10px;
-  text-decoration: none;
+  justify-content: center;
+  width: 100%;
 }
+
+.sidebar-logo svg,
 .sidebar-logo img {
-  height: 28px;
-  width: auto;
-  max-width: 140px;
+  width: 180px;
+  height: auto;
   object-fit: contain;
   display: block;
 }
 
-/* ── Nav ── */
+/* ── Nav (scrollable) ── */
 .sidebar-nav {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: auto;  /* ← Vuelve a auto para scroll */
   padding: 14px 10px;
   scrollbar-width: thin;
   scrollbar-color: #e5e5f0 transparent;
@@ -64,6 +70,7 @@
   text-transform: uppercase;
   color: #b0b0c8;
   padding: 10px 12px 5px;
+  margin: 0;
 }
 .dark .sidebar-heading { color: #4a4a6a; }
 
@@ -134,13 +141,164 @@
   color: #a78bfa;
 }
 
+/* ── FACTURAS PROCESADAS (NUEVA SECCIÓN) ── */
+.sidebar-invoices-section {
+  max-height: none;
+  border-top: none;
+  border-bottom: none;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+}
+.dark .sidebar-invoices-section {
+  border-top-color: #1e1e2a;
+  border-bottom-color: #1e1e2a;
+}
+
+.sidebar-invoices-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b0b0c8;
+  margin: 0;
+}
+.dark .sidebar-invoices-title {
+  color: #4a4a6a;
+}
+
+.sidebar-invoices-section::-webkit-scrollbar { width: 4px; }
+.sidebar-invoices-section::-webkit-scrollbar-thumb {
+  background: #e5e5f0;
+  border-radius: 4px;
+}
+.dark .sidebar-invoices-section::-webkit-scrollbar-thumb { background: #2a2a3a; }
+
+.sidebar-invoices-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 0px ;
+  gap: 8px;
+}
+
+.sidebar-invoices-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  color: #b0b0c8;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-invoices-link:hover {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+.dark .sidebar-invoices-link:hover {
+  background: #1a1a2e;
+  color: #a78bfa;
+}
+
+.sidebar-invoices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 10px;
+}
+
+.sidebar-invoice-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.sidebar-invoice-item:hover {
+  background: #f5f3ff;
+  border-color: #ede9fe;
+}
+.dark .sidebar-invoice-item:hover {
+  background: #1a1a2e;
+  border-color: #2a2a4a;
+}
+
+.sidebar-invoice-status {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.sidebar-invoice-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-invoice-provider {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.dark .sidebar-invoice-provider {
+  color: #f3f4f6;
+}
+
+.sidebar-invoice-number {
+  font-size: 10px;
+  color: #6b6b8a;
+  margin: 2px 0 0 0;
+  line-height: 1.2;
+}
+.dark .sidebar-invoice-number {
+  color: #7a7a9a;
+}
+
+.sidebar-invoice-menu {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b0b0c8;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-invoice-item:hover .sidebar-invoice-menu {
+  opacity: 1;
+}
+
 /* ── Footer ── */
 .sidebar-footer {
   flex-shrink: 0;
   padding: 10px;
   border-top: 1px solid #f0f0f5;
 }
-.dark .sidebar-footer { border-top-color: #1e1e2a; }
+.dark .sidebar-footer { 
+  border-top-color: #1e1e2a;
+}
 
 .sidebar-logout {
   display: flex;
@@ -156,6 +314,7 @@
   color: #6b6b8a;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
+  font-family: inherit;
 }
 .sidebar-logout:hover {
   background: #fff1f2;
