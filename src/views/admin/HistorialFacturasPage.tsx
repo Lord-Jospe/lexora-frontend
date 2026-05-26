@@ -10,9 +10,9 @@ import '../../css/pages/historialFacturas.css';
 // ─── Badge de estado ──────────────────────────────────────────────────────────
 
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
-  APPROVED: { label: 'Aprobado', cls: 'badge--approved' },
+  VALIDATED: { label: 'Validado', cls: 'badge--processed' },
   PENDING:  { label: 'Pendiente', cls: 'badge--pending'  },
-  REJECTED: { label: 'Rechazado', cls: 'badge--rejected' },
+  ERROR: { label: 'Rechazado', cls: 'badge--error' },
 };
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -168,9 +168,9 @@ const HistorialFacturasPage = () => {
             className="filter-select"
           >
             <option value="">Estado</option>
-            <option value="APPROVED">Aprobado</option>
+            <option value="VALIDATED">Validado</option>
             <option value="PENDING">Pendiente</option>
-            <option value="REJECTED">Rechazado</option>
+            <option value="ERROR">Rechazado</option>
           </select>
           <Icon icon="solar:alt-arrow-down-linear" width={13} className="filter-select-chevron" />
         </div>

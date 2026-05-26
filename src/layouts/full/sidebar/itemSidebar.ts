@@ -42,12 +42,12 @@ const itemSidebar: MenuItem[] = [
         icon: 'solar:users-group-rounded-linear',
         url: '/admin/historial-facturas',
       },
-      {
-        id: uniqueId(),
-         name: 'Configuraciones',
-        icon: 'solar:settings-linear',
-        url: '/admin/configuraciones',
-      },
+      // {
+      //   id: uniqueId(),
+      //    name: 'Configuraciones',
+      //   icon: 'solar:settings-linear',
+      //   url: '/admin/configuraciones',
+      // },
     ],
   },
 ];

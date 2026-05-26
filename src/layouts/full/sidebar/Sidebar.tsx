@@ -9,11 +9,11 @@ import type { InvoiceFullRead } from '../../../types/invoice.type';
 import { getRecentInvoices } from '../../../api/services/invoice.service';
 
 const STATUS_COLORS: Record<string, string> = {
-  PROCESSED: '#10b981',
+  VALIDATED: '#10b981',
   APPROVED:  '#10b981',
   PENDING:   '#f59e0b',
   ERROR:     '#ef4444',
-  REJECTED:  '#ef4444',
+
 };
 
 const SidebarLayout = ({ onClose }: { onClose?: () => void }) => {

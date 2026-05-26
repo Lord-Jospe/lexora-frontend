@@ -132,3 +132,28 @@ export interface PaginationParams {
   skip?:  number;
   limit?: number;
 }
+
+
+// -- Parámetros para actualizar una factura
+export interface InvoiceItemUpdate {
+  id?: string;
+  description: string;
+  quantity?: number;
+  unit_price?: number;
+  total?: number;
+
+}
+
+export interface InvoiceUpdateRequest {
+  category?: string;
+  issue_date?: string;
+  subtotal?: number;
+  iva?: number;
+  total?: number;
+  items?: InvoiceItemUpdate[];
+  delete_items?: string[];
+}
+
+export interface InvoiceStatusUpdateRequest  {
+  status: string;
+}

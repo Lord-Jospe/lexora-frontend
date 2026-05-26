@@ -7,6 +7,7 @@ import { getErrorMessage } from '../../utils/errorHandler';
 import { useAuth } from '../../context/authContext';
 import type { ProcessInvoiceResponse, InvoiceSaveRequest } from '../../types/invoice.type';
 import '../../css/pages/revisionFactura.css';
+import {toast} from "sonner";
 
 // ─── Badge de confianza ───────────────────────────────────────────────────────
 
@@ -128,11 +129,12 @@ const RevisionFacturasPage = () => {
     try {
       await saveInvoice(payload);
       //console.log('✅ Respuesta del backend:', response);
-
+      toast.success('Factura guardada exitosamente');
       navigate('/admin/historial-facturas');
     } catch (err: unknown) {
         //console.error('❌ Error al guardar:', err);
       setError(getErrorMessage(err));
+      toast.error('Error al guardar la factura');
     } finally {
       setSaving(false);
     }

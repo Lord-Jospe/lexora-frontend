@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { processInvoice } from '../../api/services/invoice.service';
 import { getErrorMessage } from '../../utils/errorHandler';
 import type { ProcessInvoiceResponse } from '../../types/invoice.type';
+import {toast} from 'sonner';
 
 type FileStatus = 'idle' | 'invalid' | 'ready' | 'processing';
 
@@ -72,7 +73,6 @@ const CargarDocumentosPage = () => {
     setStatus('processing');
     setError(null);
 
-    console.log("Acá funciona")
     try {
       const result: ProcessInvoiceResponse = await processInvoice(file.raw);
       
@@ -85,10 +85,11 @@ const CargarDocumentosPage = () => {
         } 
       });
       //console.log('Datos extraídos:', result);
-    
+      toast.success('Datos extraídos correctamente');
     } catch (err: unknown) {
       setError(getErrorMessage(err));
       setStatus('ready');
+      toast.error('Error al extraer los datos');
     }
   };
 

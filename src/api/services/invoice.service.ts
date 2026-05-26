@@ -5,6 +5,8 @@ import type {
   InvoiceSaveRequest,
   InvoicesByDateParams,
   PaginationParams,
+  InvoiceUpdateRequest,
+  InvoiceStatusUpdateRequest,
 } from '../../types/invoice.type';
 
 export const processInvoice = async (file: File): Promise<ProcessInvoiceResponse> => {
@@ -91,4 +93,30 @@ export const exportInvoice = async (invoiceId: string, format: ExportFormat): Pr
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+};
+
+
+export const updateInvoice = async (invoiceId: string, data: InvoiceUpdateRequest)
+: Promise<InvoiceFullRead> => {
+  const response = await api.patch<InvoiceFullRead>(`/invoices/${invoiceId}`,data);
+
+  return response.data;
+};
+
+export const updateInvoiceStatus = async (
+  invoiceId: string,
+  data: InvoiceStatusUpdateRequest
+): Promise<InvoiceFullRead> => {
+
+  const response = await api.patch<InvoiceFullRead>(
+    `/invoices/${invoiceId}/status`,
+    null,
+    {
+      params: {
+        status: data.status
+      }
+    }
+  );
+
+  return response.data;
 };
