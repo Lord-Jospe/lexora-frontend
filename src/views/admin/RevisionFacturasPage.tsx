@@ -80,12 +80,12 @@ const RevisionFacturasPage = () => {
   // ── Guardar ──────────────────────────────────────────────────────────────
 
   const handleGuardar = async () => {
-    console.log('user:', user);
+    //console.log('user:', user);
     if (!user?.id) return;
         setSaving(true);
         setError(null);
 
-    console.log('📄 Datos OCR completos:', ocr);
+    //console.log('📄 Datos OCR completos:', ocr);
     const items = ocr.items?.map((item) => ({
       description: String(item.description?.value ?? ''),
       quantity:    item.quantity?.value   ?? undefined,
@@ -126,12 +126,12 @@ const RevisionFacturasPage = () => {
     };
 
     try {
-      const response = await saveInvoice(payload);
-      console.log('✅ Respuesta del backend:', response);
+      await saveInvoice(payload);
+      //console.log('✅ Respuesta del backend:', response);
 
       navigate('/admin/historial-facturas');
     } catch (err: unknown) {
-        console.error('❌ Error al guardar:', err);
+        //console.error('❌ Error al guardar:', err);
       setError(getErrorMessage(err));
     } finally {
       setSaving(false);

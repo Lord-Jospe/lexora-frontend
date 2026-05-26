@@ -20,17 +20,26 @@ const AuthContext = createContext<AuthContextType | null>(null);
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [token, setToken] = useState<string | null>(
+  const [token, setToken] = useState<string | null>(
     () => localStorage.getItem('token')
   );
-  const [user, setUser] = useState<AuthResponse['user'] | null>(null);
+  
+  const [user, setUser] = useState<AuthResponse['user'] | null>(
+    () => {
+        const savedUser = localStorage.getItem('user');
+        return savedUser ? JSON.parse(savedUser) : null;
+    }
+  );
 
   const login = async (data: LoginRequest): Promise<AuthResponse> => {
     const response: AuthResponse = await loginService(data);
     // Guarda el token en estado y en localStorage (persiste al recargar)
     setToken(response.access_token);
-    setUser(response.user);
     localStorage.setItem('token', response.access_token);
+
+    setUser(response.user);
+    localStorage.setItem('user', JSON.stringify(response.user));
+
     return response;
   };
 
@@ -41,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('token', response.access_token);
     // Guarda el usuario recién creado en estado
     setUser(response.user);
+    localStorage.setItem('user', JSON.stringify(response.user));
     return response;
   };
 
@@ -48,6 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   return (

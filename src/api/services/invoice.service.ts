@@ -8,12 +8,18 @@ import type {
 } from '../../types/invoice.type';
 
 export const processInvoice = async (file: File): Promise<ProcessInvoiceResponse> => {
-  const formData = new FormData();
-  formData.append('file', file);
-  const response = await api.post<ProcessInvoiceResponse>('/invoices/process', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
-  return response.data;
+  try{
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post<ProcessInvoiceResponse>('/invoices/process', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+
+  } catch (error){
+    console.error('Register error:', error);
+    throw error;
+  }
 };
 
 export const saveInvoice = async (data: InvoiceSaveRequest): Promise<InvoiceFullRead> => {
@@ -21,10 +27,22 @@ export const saveInvoice = async (data: InvoiceSaveRequest): Promise<InvoiceFull
   return response.data;
 };
 
-export const listInvoices = async (): Promise<InvoiceFullRead[]> => {
-  const response = await api.get<InvoiceFullRead[]>('/invoices/');
+// ← ACTUALIZADO: Recibe user_id y parámetros de paginación
+export const listInvoices = async (userId: string, skip: number = 0, limit: number = 100): Promise<InvoiceFullRead[]> => {
+  const response = await api.get<InvoiceFullRead[]>('/invoices/', { 
+    params: { user_id: userId, skip, limit } 
+  });
   return response.data;
 };
+
+// ← NUEVO: Para obtener facturas recientes rápido (sin filtro de user)
+export const getRecentInvoices = async (userId: string, limit: number = 5): Promise<InvoiceFullRead[]> => {
+  const response = await api.get<InvoiceFullRead[]>('/invoices/', { 
+    params: { user_id: userId, skip: 0, limit }
+  });
+  return response.data;
+};
+
 
 export const getInvoiceById = async (invoiceId: string): Promise<InvoiceFullRead> => {
   const response = await api.get<InvoiceFullRead>(`/invoices/${invoiceId}`);

@@ -72,6 +72,7 @@ const CargarDocumentosPage = () => {
     setStatus('processing');
     setError(null);
 
+    console.log("Acá funciona")
     try {
       const result: ProcessInvoiceResponse = await processInvoice(file.raw);
       
@@ -83,7 +84,7 @@ const CargarDocumentosPage = () => {
           fileType: file.format.toLowerCase()
         } 
       });
-      console.log('Datos extraídos:', result);
+      //console.log('Datos extraídos:', result);
     
     } catch (err: unknown) {
       setError(getErrorMessage(err));

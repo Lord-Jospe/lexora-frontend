@@ -13,6 +13,8 @@ const CargarDocumentosPage = Loadable(lazy(() => import('../views/admin/CargarDo
 const HistorialFacturasPage = Loadable(lazy(() => import('../views/admin/HistorialFacturasPage')));
 const RevisionFacturasPage = Loadable(lazy(() => import('../views/admin/RevisionFacturasPage')));
 const DetalleFacturasPage = Loadable(lazy(() => import('../views/admin/DetalleFacturaPage')));
+const UserProfile = Loadable(lazy(() => import('../views/admin/UserProfile')));
+
 
 const MainContent = Loadable(lazy(() => import('../layouts/MainContent')));
 
@@ -44,6 +46,7 @@ const AppRouter = [
                 { path: "revision-facturas",  element: <RevisionFacturasPage />  },
                 { path: "configuraciones",    element: <ConfiguracionesPage />   },
                 { path: 'historial-facturas/:id',  element: <DetalleFacturasPage />},
+                { path: 'user-profile', element: <UserProfile /> }
                 ],
             },
         ],

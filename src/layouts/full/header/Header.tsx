@@ -6,13 +6,12 @@ import Profile from './Profile';
 import Notifications from './Messages';
 import Search from './Search';
 
-import { Sheet, SheetContent, SheetTitle } from '../../../components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from '../../../components/ui/sheet';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 
 const Header = () => {
   const [isSticky, setIsSticky] = useState(false);
-  // const [mobileMenu, setMobileMenu] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
   const handleScroll = useEffectEvent(() => {
@@ -30,7 +29,6 @@ const Header = () => {
   });
 
   useEffect(() => {
-    // Use stable callbacks inside the effect
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleResize);
 
@@ -39,14 +37,6 @@ const Header = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  // const handleMobileMenu = () => {
-  //   if (mobileMenu === 'active') {
-  //     setMobileMenu('');
-  //   } else {
-  //     setMobileMenu('active');
-  //   }
-  // };
 
   return (
     <>
@@ -95,9 +85,12 @@ const Header = () => {
       {/* Mobile Sidebar */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent side="left" className="w-64 p-0">
-          <VisuallyHidden>
-            <SheetTitle>sidebar</SheetTitle>
-          </VisuallyHidden>
+          <SheetTitle>
+            <VisuallyHidden>Menú de navegación</VisuallyHidden>
+          </SheetTitle>
+          <SheetDescription>
+            <VisuallyHidden>Navegación principal del aplicativo</VisuallyHidden>
+          </SheetDescription>
           <SidebarLayout onClose={() => setIsOpen(false)} />
         </SheetContent>
       </Sheet>

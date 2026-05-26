@@ -2,16 +2,17 @@ import { useState, useEffect, useMemo } from 'react';
 import { Icon } from '@iconify/react';
 import { listInvoices, exportInvoice } from '../../api/services/invoice.service';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { useAuth } from '../../context/authContext';
+import { useNavigate } from 'react-router-dom';
 import type { InvoiceFullRead } from '../../types/invoice.type';
-import {useNavigate}  from 'react-router-dom';
 import '../../css/pages/historialFacturas.css';
 
 // ─── Badge de estado ──────────────────────────────────────────────────────────
 
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
-  PROCESSED: { label: 'Procesado', cls: 'badge--processed' },
-  PENDING:   { label: 'Pendiente', cls: 'badge--pending'   },
-  ERROR:     { label: 'Error',     cls: 'badge--error'     },
+  APPROVED: { label: 'Aprobado', cls: 'badge--approved' },
+  PENDING:  { label: 'Pendiente', cls: 'badge--pending'  },
+  REJECTED: { label: 'Rechazado', cls: 'badge--rejected' },
 };
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -37,6 +38,9 @@ const PAGE_SIZE = 8;
 // ─── Página ───────────────────────────────────────────────────────────────────
 
 const HistorialFacturasPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
   const [invoices, setInvoices]     = useState<InvoiceFullRead[]>([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState<string | null>(null);
@@ -44,24 +48,39 @@ const HistorialFacturasPage = () => {
   const [filterStatus, setFilterStatus] = useState('');
   const [filterDate, setFilterDate]     = useState('');
   const [page, setPage]             = useState(1);
-  const [exporting, setExporting]   = useState<string | null>(null); // invoice id being exported
-    const navigate = useNavigate();
-
+  const [exporting, setExporting]   = useState<string | null>(null);
 
   // ── Carga inicial ──
   useEffect(() => {
+    let isMounted = true;
+
     const load = async () => {
+      if (!user?.id) return;
+
       try {
-        const data = await listInvoices();
-        setInvoices(data);
+        setLoading(true);
+        // ← CAMBIO: Pasar user_id como parámetro
+        const data = await listInvoices(user.id, 0, 100);
+        if (isMounted) {
+          setInvoices(data);
+        }
       } catch (err: unknown) {
-        setError(getErrorMessage(err));
+        if (isMounted) {
+          setError(getErrorMessage(err));
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
+
     load();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id]);
 
   // ── Filtros ──
   const filtered = useMemo(() => {
@@ -149,9 +168,9 @@ const HistorialFacturasPage = () => {
             className="filter-select"
           >
             <option value="">Estado</option>
-            <option value="PROCESSED">Procesado</option>
+            <option value="APPROVED">Aprobado</option>
             <option value="PENDING">Pendiente</option>
-            <option value="ERROR">Error</option>
+            <option value="REJECTED">Rechazado</option>
           </select>
           <Icon icon="solar:alt-arrow-down-linear" width={13} className="filter-select-chevron" />
         </div>
@@ -198,9 +217,10 @@ const HistorialFacturasPage = () => {
             </thead>
             <tbody>
               {paginated.map((inv) => (
-                <tr key={inv.invoice.id}
-                onClick={() => navigate(`/admin/historial-facturas/${inv.invoice.id}`)}
-                className="cursor-pointer"  // o agrega cursor: pointer al CSS></tbody>> 
+                <tr 
+                  key={inv.invoice.id}
+                  onClick={() => navigate(`/admin/historial-facturas/${inv.invoice.id}`)}
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900"
                 >
                   <td>{formatDate(inv.invoice.issue_date ?? inv.invoice.created_at)}</td>
                   <td className="td-provider">{inv.provider?.name ?? '—'}</td>
@@ -214,7 +234,10 @@ const HistorialFacturasPage = () => {
                           key={fmt}
                           className="export-btn"
                           disabled={exporting === inv.invoice.id}
-                          onClick={() => handleExport(inv.invoice.id, fmt)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleExport(inv.invoice.id, fmt);
+                          }}
                           title={`Exportar ${fmt.toUpperCase()}`}
                         >
                           {exporting === inv.invoice.id

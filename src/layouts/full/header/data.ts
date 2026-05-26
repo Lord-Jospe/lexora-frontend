@@ -242,8 +242,8 @@ interface ProfileType {
 }
 
 import acccountIcon from 'src/assets/svgs/icon-account.svg';
-import inboxIcon from 'src/assets/svgs/icon-inbox.svg';
-import taskIcon from 'src/assets/svgs/icon-tasks.svg';
+// import inboxIcon from 'src/assets/svgs/icon-inbox.svg';
+// import taskIcon from 'src/assets/svgs/icon-tasks.svg';
 
 const profileDD: ProfileType[] = [
   {
@@ -251,22 +251,22 @@ const profileDD: ProfileType[] = [
     title: 'Mi perfil',
     subtitle: 'Account settings',
     icon: "tabler:user",
-    url: '/user-profile',
+    url: '/admin/user-profile',
   },
-  {
-    img: inboxIcon,
-    title: 'Mis Notas',
-    subtitle: 'Mis Notas Diarias',
-    icon: "tabler:mail",
-    url: '/apps/Notes',
-  },
-  {
-    img: taskIcon,
-    title: 'Mis Blogs',
-    subtitle: 'Historias, ideas y actualizaciones',
-    icon: "tabler:list-check",
-    url: '/apps/blog/post',
-  },
+  // {
+  //   img: inboxIcon,
+  //   title: 'Mis Notas',
+  //   subtitle: 'Mis Notas Diarias',
+  //   icon: "tabler:mail",
+  //   url: '/apps/Notes',
+  // },
+  // {
+  //   img: taskIcon,
+  //   title: 'Mis Blogs',
+  //   subtitle: 'Historias, ideas y actualizaciones',
+  //   icon: "tabler:list-check",
+  //   url: '/apps/blog/post',
+  // },
 ];
 
 export { appsLink, pageLinks, SearchLinks, MessagesLink, Notification, profileDD };
