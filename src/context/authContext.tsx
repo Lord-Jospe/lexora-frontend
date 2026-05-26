@@ -8,6 +8,9 @@ import type { AuthResponse, LoginRequest, RegisterRequest } from '../types/auth.
 interface AuthContextType {
   token:    string | null;
   user:     AuthResponse['user'] | null;
+  setUser: React.Dispatch<
+    React.SetStateAction<AuthResponse['user'] | null>
+  >;
   login:    (data: LoginRequest)    => Promise<AuthResponse>;
   register: (data: RegisterRequest) => Promise<AuthResponse>;
   logout:   () => void;
@@ -62,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, register, logout }}>
+    <AuthContext.Provider value={{ token, user, setUser, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

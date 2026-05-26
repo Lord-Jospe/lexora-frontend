@@ -29,6 +29,7 @@
     "react-router-dom": "^7.15.1",
     "simplebar": "^6.3.3",
     "simplebar-react": "^3.3.2",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
     "tailwind-sidebar": "^1.3.4",
     "tailwindcss": "^4.3.0",

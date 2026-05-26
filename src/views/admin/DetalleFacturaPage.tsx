@@ -94,7 +94,7 @@ const DetalleFacturaPage = () => {
   const totalItems = invoice.items.reduce((acc, item) => acc + (item.total ?? 0), 0);
 
   return (
-    <div className="detalle-page">
+    <div className="detalle-page pb-16">
 
       {/* ── Título ── */}
       <div className="detalle-header">

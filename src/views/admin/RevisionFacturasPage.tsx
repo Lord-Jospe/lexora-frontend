@@ -141,7 +141,7 @@ const RevisionFacturasPage = () => {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="revision-page">
+    <div className="revision-page pb-16">
       <div className="revision-title-block">
         <h1 className="revision-title">Visualización</h1>
         <p className="revision-subtitle">

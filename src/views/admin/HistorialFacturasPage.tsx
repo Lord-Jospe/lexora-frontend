@@ -127,7 +127,7 @@ const HistorialFacturasPage = () => {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="historial-page">
+    <div className="historial-page pb-16">
 
       {/* ── Título ── */}
       <div className="historial-header">

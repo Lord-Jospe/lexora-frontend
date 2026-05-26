@@ -18,12 +18,12 @@ const itemSidebar: MenuItem[] = [
   {
     heading: 'Menú Principal',
     children: [
-      {
-        id: uniqueId(),
-        name: 'Home',
-        icon: 'solar:widget-2-linear',
-        url: '/admin',
-      },
+      // {
+      //   id: uniqueId(),
+      //   name: 'Home',
+      //   icon: 'solar:widget-2-linear',
+      //   url: '/admin',
+      // },
       {
         id: uniqueId(),
         name: 'Cargar documentos',
@@ -44,7 +44,7 @@ const itemSidebar: MenuItem[] = [
       },
       {
         id: uniqueId(),
-        name: 'Configuraciones',
+         name: 'Configuraciones',
         icon: 'solar:settings-linear',
         url: '/admin/configuraciones',
       },
