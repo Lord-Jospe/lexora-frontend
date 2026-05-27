@@ -15,6 +15,11 @@ import '../../css/pages/proveedorPage.css';
 
 const PARTY_TYPE_OPTIONS = ['DISTRIBUTOR', 'CLIENT'];
 
+const PARTY_TYPE_MAP: Record<string, { label: string; color: string; bgColor: string }> = {
+  DISTRIBUTOR: { label: 'Distribuidor', color: '#0891b2', bgColor: 'rgba(6,182,212,0.1)' },
+  CLIENT:      { label: 'Cliente', color: '#16a34a', bgColor: 'rgba(22,163,74,0.1)' },
+};
+
 const formatCurrency = (n?: number) => {
   if (n === undefined || n === null) return '—';
   return new Intl.NumberFormat('es-CO', {
@@ -177,7 +182,7 @@ const ProveedorPage = () => {
 
         <div className="proveedores-header-top" style={{ marginTop: '20px' }}>
           <div className="proveedores-search-wrap">
-            <Icon icon="solar:magnifer-linear" width={17} className="proveedores-search-icon" />
+            <Icon icon="mdi:magnify" width={17} className="proveedores-search-icon" />
             <input
               type="text"
               placeholder="Buscar por nombre o NIT..."
@@ -187,8 +192,11 @@ const ProveedorPage = () => {
             />
           </div>
 
-          <button onClick={() => setShowCreate(true)} className="proveedores-btn-primary">
-            <Icon icon="solar:add-linear" width={16} />
+          <button onClick={() => setShowCreate(true)} 
+          className="flex items-center gap-2 px-4 py-2 rounded-xl
+                         bg-violet-500 text-white text-sm font-semibold
+                         hover:bg-violet-600 shadow-btn-shadow transition-all">
+            
             Nuevo proveedor
           </button>
         </div>
@@ -202,12 +210,12 @@ const ProveedorPage = () => {
 
         {loading ? (
           <div className="proveedores-loading">
-            <Icon icon="solar:refresh-linear" width={28} className="animate-spin" />
+            <Icon icon="mdi:refresh" width={28} className="animate-spin" />
             <p>Cargando proveedores...</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="proveedores-empty">
-            <Icon icon="solar:users-group-rounded-linear" width={40} className="opacity-40" />
+            <Icon icon="mdi:account-group" width={40} className="opacity-40" />
             <p>No se encontraron proveedores</p>
           </div>
         ) : (
@@ -222,44 +230,53 @@ const ProveedorPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((party) => (
-                <tr key={party.id}>
-                  <td className="proveedores-table-name">{party.name}</td>
-                  <td className="proveedores-table-nit">{party.nit ?? '—'}</td>
-                  <td>
-                    <span className="proveedores-table-type">
-                      {party.party_type ?? '—'}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => openInvoices(party)}
-                      className="proveedores-table-invoice-btn"
-                    >
-                      <Icon icon="solar:document-text-linear" width={14} />
-                      Ver facturas
-                    </button>
-                  </td>
-                  <td>
-                    <div className="proveedores-table-actions">
-                      <button
-                        onClick={() => openEdit(party)}
-                        className="proveedores-btn-icon"
-                        title="Editar"
+              {filtered.map((party) => {
+                const partyType = PARTY_TYPE_MAP[party.party_type ?? 'DISTRIBUTOR'] ?? PARTY_TYPE_MAP.DISTRIBUTOR;
+                return (
+                  <tr key={party.id}>
+                    <td className="proveedores-table-name">{party.name}</td>
+                    <td className="proveedores-table-nit">{party.nit ?? '—'}</td>
+                    <td>
+                      <span
+                        className="proveedores-table-type"
+                        style={{
+                          background: partyType.bgColor,
+                          color: partyType.color,
+                        }}
                       >
-                        <Icon icon="solar:pen-linear" width={16} />
-                      </button>
+                        {partyType.label}
+                      </span>
+                    </td>
+                    <td>
                       <button
-                        onClick={() => setDeleteTarget(party)}
-                        className="proveedores-btn-icon proveedores-btn-icon--delete"
-                        title="Eliminar"
+                        onClick={() => openInvoices(party)}
+                        className="proveedores-table-invoice-btn"
                       >
-                        <Icon icon="solar:trash-bin-trash-linear" width={16} />
+                        <Icon icon="mdi:file-document-outline" width={14} />
+                        Ver facturas
                       </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td>
+                      <div className="proveedores-table-actions">
+                        <button
+                          onClick={() => openEdit(party)}
+                          className="proveedores-btn-icon"
+                          title="Editar"
+                        >
+                          <Icon icon="mdi:pencil" width={16} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(party)}
+                          className="proveedores-btn-icon proveedores-btn-icon--delete"
+                          title="Eliminar"
+                        >
+                          <Icon icon="mdi:trash-can" width={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -272,13 +289,15 @@ const ProveedorPage = () => {
         <div className="proveedores-modal-overlay">
           <div className="proveedores-modal">
             <div className="proveedores-modal-header">
-              <h3 className="proveedores-modal-title">Nuevo proveedor</h3>
-              <p className="proveedores-modal-subtitle">Completa los datos del proveedor</p>
+              <div>
+                <h3 className="proveedores-modal-title">Nuevo proveedor</h3>
+                <p className="proveedores-modal-subtitle">Completa los datos del proveedor</p>
+              </div>
               <button
                 onClick={() => setShowCreate(false)}
                 className="proveedores-modal-close"
               >
-                <Icon icon="solar:close-linear" width={18} />
+                <Icon icon="mdi:close" width={18} />
               </button>
             </div>
 
@@ -312,9 +331,12 @@ const ProveedorPage = () => {
                   onChange={(e) => setCreateForm({ ...createForm, party_type: e.target.value })}
                   className="proveedores-form-select"
                 >
-                  {PARTY_TYPE_OPTIONS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
+                  {PARTY_TYPE_OPTIONS.map((t) => {
+                    const typeInfo = PARTY_TYPE_MAP[t];
+                    return (
+                      <option key={t} value={t}>{typeInfo.label}</option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
@@ -332,8 +354,8 @@ const ProveedorPage = () => {
                 className="proveedores-btn-confirm"
               >
                 {saving
-                  ? <><Icon icon="solar:refresh-linear" width={14} className="animate-spin" /> Creando...</>
-                  : <><Icon icon="solar:add-linear" width={14} /> Crear proveedor</>
+                  ? <><Icon icon="mdi:refresh" width={14} className="animate-spin" /> Creando...</>
+                  : <><Icon icon="mdi:plus" width={14} /> Crear proveedor</>
                 }
               </button>
             </div>
@@ -348,13 +370,15 @@ const ProveedorPage = () => {
         <div className="proveedores-modal-overlay">
           <div className="proveedores-modal">
             <div className="proveedores-modal-header">
-              <h3 className="proveedores-modal-title">Editar proveedor</h3>
-              <p className="proveedores-modal-subtitle">{editTarget.name}</p>
+              <div>
+                <h3 className="proveedores-modal-title">Editar proveedor</h3>
+                <p className="proveedores-modal-subtitle">{editTarget.name}</p>
+              </div>
               <button
                 onClick={() => setEditTarget(null)}
                 className="proveedores-modal-close"
               >
-                <Icon icon="solar:close-linear" width={18} />
+                <Icon icon="mdi:close" width={18} />
               </button>
             </div>
 
@@ -386,9 +410,12 @@ const ProveedorPage = () => {
                   onChange={(e) => setEditForm({ ...editForm, party_type: e.target.value })}
                   className="proveedores-form-select"
                 >
-                  {PARTY_TYPE_OPTIONS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
+                  {PARTY_TYPE_OPTIONS.map((t) => {
+                    const typeInfo = PARTY_TYPE_MAP[t];
+                    return (
+                      <option key={t} value={t}>{typeInfo.label}</option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
@@ -406,8 +433,8 @@ const ProveedorPage = () => {
                 className="proveedores-btn-confirm"
               >
                 {saving
-                  ? <><Icon icon="solar:refresh-linear" width={14} className="animate-spin" /> Guardando...</>
-                  : <><Icon icon="solar:diskette-linear" width={14} /> Guardar</>
+                  ? <><Icon icon="mdi:refresh" width={14} className="animate-spin" /> Guardando...</>
+                  : <><Icon icon="mdi:content-save" width={14} /> Guardar</>
                 }
               </button>
             </div>
@@ -424,7 +451,7 @@ const ProveedorPage = () => {
             <div className="proveedores-modal-header">
               <div className="proveedores-delete-content">
                 <div className="proveedores-delete-icon">
-                  <Icon icon="solar:trash-bin-trash-bold" width={24} />
+                  <Icon icon="mdi:trash-can" width={24} />
                 </div>
                 <h3 className="proveedores-delete-title">¿Eliminar proveedor?</h3>
                 <p className="proveedores-delete-desc">
@@ -448,8 +475,8 @@ const ProveedorPage = () => {
                 className="proveedores-btn-delete"
               >
                 {deleting
-                  ? <><Icon icon="solar:refresh-linear" width={14} className="animate-spin" /> Eliminando...</>
-                  : <><Icon icon="solar:trash-bin-trash-linear" width={14} /> Sí, eliminar</>
+                  ? <><Icon icon="mdi:refresh" width={14} className="animate-spin" /> Eliminando...</>
+                  : <><Icon icon="mdi:trash-can" width={14} /> Sí, eliminar</>
                 }
               </button>
             </div>
@@ -464,31 +491,33 @@ const ProveedorPage = () => {
         <div className="proveedores-modal-overlay">
           <div className="proveedores-modal proveedores-invoices-modal">
             <div className="proveedores-modal-header">
-              <h3 className="proveedores-modal-title">
-                Facturas de {invoicesTarget.name}
-              </h3>
-              <p className="proveedores-modal-subtitle">
-                NIT: {invoicesTarget.nit ?? '—'}
-              </p>
+              <div>
+                <h3 className="proveedores-modal-title">
+                  Facturas de {invoicesTarget.name}
+                </h3>
+                <p className="proveedores-modal-subtitle">
+                  NIT: {invoicesTarget.nit ?? '—'}
+                </p>
+              </div>
               <button
                 onClick={() => setInvoicesTarget(null)}
                 className="proveedores-modal-close"
               >
-                <Icon icon="solar:close-linear" width={18} />
+                <Icon icon="mdi:close" width={18} />
               </button>
             </div>
 
             <div className="proveedores-modal-body" style={{ padding: 0 }}>
               {loadingInvoices ? (
                 <div style={{ textAlign: 'center', padding: '32px 20px' }}>
-                  <Icon icon="solar:refresh-linear" width={26} className="animate-spin" />
+                  <Icon icon="mdi:refresh" width={26} className="animate-spin" />
                   <p style={{ marginTop: '12px', fontSize: '13px', color: 'var(--muted-foreground)' }}>
                     Cargando facturas...
                   </p>
                 </div>
               ) : providerInvoices.length === 0 ? (
                 <div className="proveedores-invoices-empty">
-                  <Icon icon="solar:inbox-linear" width={36} className="opacity-40" />
+                  <Icon icon="mdi:inbox" width={36} className="opacity-40" />
                   <p style={{ marginTop: '12px' }}>
                     Este proveedor no tiene facturas registradas
                   </p>
@@ -530,7 +559,7 @@ const ProveedorPage = () => {
                           className="proveedores-invoices-link"
                         >
                           Ver detalle
-                          <Icon icon="solar:alt-arrow-right-linear" width={12} />
+                          <Icon icon="mdi:arrow-right" width={12} />
                         </button>
                       </div>
                     );
