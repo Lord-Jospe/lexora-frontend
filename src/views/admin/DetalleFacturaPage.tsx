@@ -123,10 +123,19 @@ const DetalleFacturaPage = () => {
     if (!id) return;
     setSaving(true);
     try {
+      
+      // Items existentes modificados (no borrados, no nuevos)
       const itemsToUpdate = editItems
         .filter((i) => !i._deleted && !i._isNew)
         .map(({ id: itemId, description, quantity, unit_price, total }) => ({
           id: itemId, description, quantity, unit_price, total,
+        }));
+
+          //Items nuevos — sin ID, el backend los crea
+      const newItems = editItems
+        .filter((i) => i._isNew && !i._deleted && i.description.trim() !== '')
+        .map(({ description, quantity, unit_price, total }) => ({
+          description, quantity, unit_price, total,
         }));
 
       const deleteItems = editItems
@@ -139,11 +148,13 @@ const DetalleFacturaPage = () => {
         subtotal:     parseFloat(editForm.subtotal) || undefined,
         iva:          parseFloat(editForm.iva)      || undefined,
         total:        parseFloat(editForm.total)    || undefined,
-        items:        itemsToUpdate,
+        items:        [...itemsToUpdate, ...newItems],
         delete_items: deleteItems.length ? deleteItems : undefined,
       };
 
+      console.log('Payload de actualización:', payload);
       const updated = await updateInvoice(id, payload);
+      
       setInvoice(updated);
       setShowEditModal(false);
       toast.success('Factura actualizada correctamente');
