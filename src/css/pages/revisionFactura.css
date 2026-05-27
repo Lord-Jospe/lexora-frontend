@@ -104,22 +104,19 @@
   flex: 1;
   overflow: auto;
   position: relative;
-  background:
-    linear-gradient(45deg, #f3f4f6 25%, transparent 25%),
-    linear-gradient(-45deg, #f3f4f6 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #f3f4f6 75%),
-    linear-gradient(-45deg, transparent 75%, #f3f4f6 75%);
-  background-size: 24px 24px;
-  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
-}
-
-.viewer-image-wrapper {
-  min-width: 100%;
-  min-height: 100%;
+  background: var(--background);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 30px;
+}
+
+.viewer-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .viewer-image {
@@ -129,7 +126,6 @@
   border-radius: 12px;
   box-shadow: 0 10px 35px rgba(0,0,0,0.18);
   transition: transform 0.2s ease;
-  transform-origin: center center;
   user-select: none;
 }
 
@@ -153,6 +149,26 @@
 .viewer-empty-icon {
   opacity: 0.5;
 }
+/* ──────────────────────────────────────────────────────────
+   FULLSCREEN
+────────────────────────────────────────────────────────── */
+.revision-viewer:fullscreen {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+}
+
+.revision-viewer:fullscreen .viewer-body {
+  padding: 20px;
+}
+
+.revision-viewer:fullscreen .viewer-image {
+  max-width: 90vw;
+  max-height: 85vh;
+}
+
 
 /* ──────────────────────────────────────────────────────────
    PANEL
@@ -413,4 +429,23 @@
     flex-wrap: wrap;
     gap: 12px;
   }
+}
+
+/* ──────────────────────────────────────────────────────────
+   TRANSFORM COMPONENT (react-zoom-pan-pinch)
+────────────────────────────────────────────────────────── */
+.react-transform-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.react-transform-component {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
 }

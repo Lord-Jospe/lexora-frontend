@@ -363,12 +363,30 @@ const RevisionFacturasPage = () => {
     }
   };
 
+
+  const handleFullscreen = async () => {
+    try {
+      const element = document.querySelector(
+        '.revision-viewer'
+      );
+      
+      if (!element) return;
+
+      if (!document.fullscreenElement) {
+        await element.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error('Fullscreen error:', err);
+    }
+  };
   // ────────────────────────────────────────────────────────
   // RENDER
   // ────────────────────────────────────────────────────────
 
   return (
-    <div className="revision-page pb-16">
+    <div className="revision-page">
       {/* HEADER */}
       <div className="revision-title-block">
         <h1 className="revision-title">
@@ -387,104 +405,116 @@ const RevisionFacturasPage = () => {
         {/* ───────────────────────────────────────────── */}
 
         <div className="revision-viewer">
-        {fileType === 'pdf' ? (
-          <>
-            <div className="viewer-toolbar">
-              <div className="viewer-toolbar-left">
-                <span className="viewer-zoom">
-                  Documento PDF
-                </span>
-              </div>
-            </div>
-
-            <div className="viewer-body">
-              <iframe
-                src={fileUrl ?? ''}
-                title="PDF Viewer"
-                className="viewer-pdf"
-              />
-            </div>
-          </>
-        ) : (
-          <TransformWrapper
-            initialScale={1}
-            minScale={0.5}
-            maxScale={4}
-            centerOnInit
-            wheel={{ step: 0.08 }}
-          >
-            {({
-              zoomIn,
-              zoomOut,
-              resetTransform,
-              state,
-            }) => (
-              <>
-                <div className="viewer-toolbar">
-                  <div className="viewer-toolbar-left">
-                    <button
-                      className="viewer-btn"
-                      onClick={() => zoomOut()}
-                    >
-                      <Icon
-                        icon="solar:minus-linear"
-                        width={18}
-                      />
-                    </button>
-
-                    <span className="viewer-zoom">
-                        {Math.round(state.scale * 100)}% {/* Accede a 'state.scale' directamente */}
-                    </span>
-
-                    <button
-                      className="viewer-btn"
-                      onClick={() => zoomIn()}
-                    >
-                      <Icon
-                        icon="solar:add-linear"
-                        width={18}
-                      />
-                    </button>
-                  </div>
-
-                  <div className="viewer-toolbar-right">
-                    <button
-                      className="viewer-btn"
-                      onClick={() => resetTransform()}
-                    >
-                      <Icon
-                        icon="solar:restart-linear"
-                        width={18}
-                      />
-                    </button>
-                  </div>
+          {fileType === 'pdf' ? (
+            <>
+              <div className="viewer-toolbar">
+                <div className="viewer-toolbar-left">
+                  <span className="viewer-zoom">
+                    Documento PDF
+                  </span>
                 </div>
+              </div>
 
-                <div className="viewer-body">
-                  <TransformComponent
-                    wrapperStyle={{
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    contentStyle={{
-                      width: '100%',
-                      height: '100%',
-                    }}
-                  >
-                    <div className="viewer-image-wrapper">
+              <div className="viewer-body">
+                <iframe
+                  src={fileUrl ?? ''}
+                  title="PDF Viewer"
+                  className="viewer-pdf"
+                />
+              </div>
+            </>
+          ) : (
+            <TransformWrapper
+              initialScale={1}
+              minScale={0.5}
+              maxScale={4}
+              centerOnInit
+              wheel={{ step: 0.001 }}
+            >
+              {({
+                zoomIn,
+                zoomOut,
+                resetTransform,
+                state,
+              }) => (
+                <>
+                  <div className="viewer-toolbar">
+                    <div className="viewer-toolbar-left">
+                      <button
+                        className="viewer-btn"
+                        onClick={() => zoomOut()}
+                        title="Zoom out"
+                      >
+                        <Icon
+                          icon="tabler:zoom-out"
+                          width={18}
+                        />
+                      </button>
+
+                      <span className="viewer-zoom">
+                        {Math.round(state.scale * 100)}%
+                      </span>
+
+                      <button
+                        className="viewer-btn"
+                        onClick={() => zoomIn()}
+                        title="Zoom in"
+                      >
+                        <Icon
+                          icon="tabler:zoom-in"
+                          width={18}
+                        />
+                      </button>
+                    </div>
+
+                    <div className="viewer-toolbar-right">
+                      <button
+                        className="viewer-btn"
+                        onClick={() => resetTransform()}
+                        title="Reset view"
+                      >
+                        <Icon
+                          icon="solar:restart-linear"
+                          width={18}
+                        />
+                      </button>
+
+                      <button
+                        className="viewer-btn"
+                        onClick={handleFullscreen}
+                        title="Fullscreen"
+                      >
+                        <Icon
+                          icon="tabler:maximize"
+                          width={18}
+                        />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="viewer-body">
+                    <TransformComponent
+                      wrapperStyle={{
+                        width: '100%',
+                        height: '100%',
+                      }}
+                      contentStyle={{
+                        width: '100%',
+                        height: '100%',
+                      }}
+                    >
                       <img
                         src={fileUrl ?? ''}
                         alt={data.filename}
                         className="viewer-image"
                       />
-                    </div>
-                  </TransformComponent>
-                </div>
-              </>
-            )}
-          </TransformWrapper>
-        )}
-      </div>
+                    </TransformComponent>
+                  </div>
+                </>
+              )}
+            </TransformWrapper>
+          )}
+        </div>
 
         {/* ───────────────────────────────────────────── */}
         {/* PANEL */}
