@@ -8,12 +8,12 @@ import PrivateRoute from "./PrivateRoute";
 
 import { lazy } from "react";
 
-const ConfiguracionesPage = Loadable(lazy(() => import('../views/admin/ConfiguracionesPage')));
 const CargarDocumentosPage = Loadable(lazy(() => import('../views/admin/CargarDocumentosPage')));
 const HistorialFacturasPage = Loadable(lazy(() => import('../views/admin/HistorialFacturasPage')));
 const RevisionFacturasPage = Loadable(lazy(() => import('../views/admin/RevisionFacturasPage')));
 const DetalleFacturasPage = Loadable(lazy(() => import('../views/admin/DetalleFacturaPage')));
 const UserProfile = Loadable(lazy(() => import('../views/admin/UserProfile')));
+const ProveedorPage = Loadable(lazy(() => import('../views/admin/ProveedorPage')));
 
 
 const MainContent = Loadable(lazy(() => import('../layouts/MainContent')));
@@ -44,7 +44,7 @@ const AppRouter = [
                 { path: "cargar-documentos",  element: <CargarDocumentosPage />  },
                 { path: "historial-facturas", element: <HistorialFacturasPage /> },
                 { path: "revision-facturas",  element: <RevisionFacturasPage />  },
-                { path: "configuraciones",    element: <ConfiguracionesPage />   },
+                { path: "proveedores",    element: <ProveedorPage />   },
                 { path: 'historial-facturas/:id',  element: <DetalleFacturasPage />},
                 { path: 'user-profile', element: <UserProfile /> }
                 ],
