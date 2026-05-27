@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Icon } from '@iconify/react';
-import { listInvoices, exportInvoice } from '../../api/services/invoice.service';
+import { listInvoices, exportInvoice, deleteInvoice } from '../../api/services/invoice.service';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { useAuth } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
 import type { InvoiceFullRead } from '../../types/invoice.type';
 import '../../css/pages/historialFacturas.css';
+import { toast } from 'sonner';
 
 // ─── Badge de estado ──────────────────────────────────────────────────────────
 
@@ -49,6 +50,11 @@ const HistorialFacturasPage = () => {
   const [filterDate, setFilterDate]     = useState('');
   const [page, setPage]             = useState(1);
   const [exporting, setExporting]   = useState<string | null>(null);
+
+   // ── Modal de confirmación de borrado ──
+  const [deleteTarget, setDeleteTarget] = useState<InvoiceFullRead | null>(null);
+  const [deleting, setDeleting]         = useState(false);
+
 
   // ── Carga inicial ──
   useEffect(() => {
@@ -124,6 +130,23 @@ const HistorialFacturasPage = () => {
     }
   };
 
+
+    // ── Confirmar borrado ──
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteInvoice(deleteTarget.invoice.id);
+      setInvoices((prev) => prev.filter((inv) => inv.invoice.id !== deleteTarget.invoice.id));
+      setDeleteTarget(null);
+      toast.success(`Factura de ${deleteTarget.provider?.name ?? 'proveedor'} eliminada`);
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err));
+    } finally {
+      setDeleting(false);
+    }
+  };
+  
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -248,7 +271,19 @@ const HistorialFacturasPage = () => {
                       ))}
                     </div>
                   </td>
-                </tr>
+                  {/* ── Botón eliminar ── */}
+                  <td>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setDeleteTarget(inv); }}
+                      className=" items-center justify-center h-8 rounded-lg
+                                 text-muted-foreground hover:bg-lighterror hover:text-error
+                                 transition-colors"
+                      title="Eliminar factura"
+                    >
+                      <Icon icon="solar:trash-bin-trash-linear" width={16} />
+                    </button>
+                  </td>
+                </tr>          
               ))}
             </tbody>
           </table>
@@ -289,6 +324,54 @@ const HistorialFacturasPage = () => {
         </div>
       )}
 
+
+      {/* ── Modal confirmación de borrado ── */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-full max-w-sm bg-card border-2 border-gray-200 dark:border-gray-700
+                          rounded-2xl p-6 shadow-lg mx-4">
+ 
+            <div className="flex flex-col items-center text-center gap-3 mb-5">
+              <div className="w-12 h-12 rounded-full bg-lighterror flex items-center justify-center">
+                <Icon icon="solar:trash-bin-trash-bold" width={24} className="text-error" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground">¿Eliminar factura?</h3>
+              <p className="text-sm text-muted-foreground">
+                Se eliminará la factura de{' '}
+                <strong className="text-foreground">{deleteTarget.provider?.name ?? 'este proveedor'}</strong>
+                {deleteTarget.invoice.invoice_number && (
+                  <> — <span className="font-mono">#{deleteTarget.invoice.invoice_number}</span></>
+                )}
+                . Esta acción no se puede deshacer.
+              </p>
+            </div>
+ 
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200
+                           dark:border-gray-700 text-sm font-semibold text-foreground
+                           hover:bg-muted transition-colors disabled:opacity-60"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5
+                           rounded-xl bg-error text-white text-sm font-semibold
+                           hover:opacity-90 transition-opacity disabled:opacity-60"
+              >
+                {deleting
+                  ? <><Icon icon="solar:refresh-linear" width={14} className="animate-spin" /> Eliminando...</>
+                  : <><Icon icon="solar:trash-bin-trash-linear" width={14} /> Sí, eliminar</>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

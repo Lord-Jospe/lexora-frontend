@@ -87,6 +87,7 @@ const DetalleFacturaPage = () => {
     load();
   }, [id]);
 
+  
   // ── Abrir modal editar ──
   const openEditModal = () => {
     if (!invoice) return;
@@ -123,10 +124,19 @@ const DetalleFacturaPage = () => {
     if (!id) return;
     setSaving(true);
     try {
+      
+      // Items existentes modificados (no borrados, no nuevos)
       const itemsToUpdate = editItems
         .filter((i) => !i._deleted && !i._isNew)
         .map(({ id: itemId, description, quantity, unit_price, total }) => ({
           id: itemId, description, quantity, unit_price, total,
+        }));
+
+          //Items nuevos — sin ID, el backend los crea
+      const newItems = editItems
+        .filter((i) => i._isNew && !i._deleted && i.description.trim() !== '')
+        .map(({ description, quantity, unit_price, total }) => ({
+          description, quantity, unit_price, total,
         }));
 
       const deleteItems = editItems
@@ -139,11 +149,13 @@ const DetalleFacturaPage = () => {
         subtotal:     parseFloat(editForm.subtotal) || undefined,
         iva:          parseFloat(editForm.iva)      || undefined,
         total:        parseFloat(editForm.total)    || undefined,
-        items:        itemsToUpdate,
+        items:        [...itemsToUpdate, ...newItems],
         delete_items: deleteItems.length ? deleteItems : undefined,
       };
 
+      console.log('Payload de actualización:', payload);
       const updated = await updateInvoice(id, payload);
+      
       setInvoice(updated);
       setShowEditModal(false);
       toast.success('Factura actualizada correctamente');
@@ -221,6 +233,18 @@ const DetalleFacturaPage = () => {
           <h1 className="detalle-title">Detalles De Factura</h1>
           {/* Botones de edición */}
           <div className="flex gap-2">
+            
+                        {invoice.document?.file_url && (
+              <button
+                onClick={() => window.open(invoice.document?.file_url, '_blank')}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-200
+                          text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                title="Ver documento"
+              >
+                <Icon icon="solar:eye-linear" width={16} />
+                Ver factura
+              </button>
+            )}
             <button
               onClick={() => setShowStatusModal(true)}
               className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-200
@@ -240,6 +264,8 @@ const DetalleFacturaPage = () => {
             </button>
           </div>
         </div>
+
+        
       </div>
 
       {/* ── Error inline ── */}
@@ -552,7 +578,6 @@ const DetalleFacturaPage = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

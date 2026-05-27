@@ -150,7 +150,7 @@ export interface InvoiceUpdateRequest {
   subtotal?: number;
   iva?: number;
   total?: number;
-  items?: InvoiceItemUpdate[];
+  items?: (InvoiceItemUpdate | Omit<InvoiceItemUpdate, 'id'>)[];
   delete_items?: string[];
 }
 

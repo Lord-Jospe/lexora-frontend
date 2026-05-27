@@ -27,7 +27,7 @@ const itemSidebar: MenuItem[] = [
       {
         id: uniqueId(),
         name: 'Cargar documentos',
-        icon: 'solar:chat-square-arrow-linear',
+        icon: 'solar:upload-minimalistic-linear',
         url: '/admin/cargar-documentos',
       },
       {
@@ -39,15 +39,15 @@ const itemSidebar: MenuItem[] = [
       {
         id: uniqueId(),
         name: 'Historial de facturas',
-        icon: 'solar:users-group-rounded-linear',
+        icon: 'solar:folder-open-linear',
         url: '/admin/historial-facturas',
       },
-      // {
-      //   id: uniqueId(),
-      //    name: 'Configuraciones',
-      //   icon: 'solar:settings-linear',
-      //   url: '/admin/configuraciones',
-      // },
+      {
+        id: uniqueId(),
+        name: 'Proveedores',
+        icon: 'solar:users-group-rounded-linear',
+        url: '/admin/proveedores',
+      },
     ],
   },
 ];
