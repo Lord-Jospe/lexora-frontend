@@ -117,6 +117,9 @@ export const updateInvoiceStatus = async (
       }
     }
   );
-
   return response.data;
+};
+
+export const deleteInvoice = async (invoiceId: string): Promise<void> => {
+  await api.delete(`/invoices/${invoiceId}`);
 };
