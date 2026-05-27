@@ -87,6 +87,7 @@ const DetalleFacturaPage = () => {
     load();
   }, [id]);
 
+  
   // ── Abrir modal editar ──
   const openEditModal = () => {
     if (!invoice) return;
@@ -232,6 +233,18 @@ const DetalleFacturaPage = () => {
           <h1 className="detalle-title">Detalles De Factura</h1>
           {/* Botones de edición */}
           <div className="flex gap-2">
+            
+                        {invoice.document?.file_url && (
+              <button
+                onClick={() => window.open(invoice.document?.file_url, '_blank')}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-200
+                          text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                title="Ver documento"
+              >
+                <Icon icon="solar:eye-linear" width={16} />
+                Ver factura
+              </button>
+            )}
             <button
               onClick={() => setShowStatusModal(true)}
               className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-200
@@ -251,6 +264,8 @@ const DetalleFacturaPage = () => {
             </button>
           </div>
         </div>
+
+        
       </div>
 
       {/* ── Error inline ── */}
@@ -563,7 +578,6 @@ const DetalleFacturaPage = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
